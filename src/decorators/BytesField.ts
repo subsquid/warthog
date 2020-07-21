@@ -14,7 +14,7 @@ class BytesTransformer implements ValueTransformer {
   }
 
   from(value: Buffer) {
-    return '0x' + value.toString('hex');
+    return value ? '0x' + value.toString('hex') : value;
   }
 }
 
