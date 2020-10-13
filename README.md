@@ -7,8 +7,9 @@
 </p>
 
 <p align="center">
+  <a href="https://blacklivesmatter.com/"><img src="https://img.shields.io/badge/branch-main-fce21b?labelColor=black" alt="Black Lives Matter"/></a>
   <a href="https://www.npmjs.org/package/warthog"><img src="https://img.shields.io/npm/v/warthog.svg" alt="npm version"></a>
-  <a href="https://circleci.com/gh/goldcaddy77/warthog/tree/master"><img src="https://circleci.com/gh/goldcaddy77/warthog/tree/master.svg?style=shield" alt="CircleCI"></a>
+  <a href="https://circleci.com/gh/goldcaddy77/warthog/tree/main"><img src="https://circleci.com/gh/goldcaddy77/warthog/tree/main.svg?style=shield" alt="CircleCI"></a>
   <a href="https://codecov.io/gh/goldcaddy77/warthog"><img src="https://codecov.io/gh/goldcaddy77/warthog/branch/master/graph/badge.svg" alt="styled with prettier"></a>
   <a href="#badge"><img src="https://img.shields.io/badge/styled_with-prettier-ff69b4.svg" alt="styled with prettier"></a>
   <a href="https://github.com/semantic-release/semantic-release"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="semantic-release"></a>
@@ -111,7 +112,7 @@ Further, it covers the following concerns by hooking into best-in-class open sou
 
 ## Prerequisites
 
-Warthog currently only supports PostgreSQL as a DB engine, so you must have Postgres installed before getting Warthog set up. (Note: Postgres 12 is not currently supported)
+Warthog currently only supports PostgreSQL as a DB engine, so you must have Postgres installed before getting Warthog set up.
 
 <details>
 <summary>Expand for Postgres installation options</summary>
@@ -290,7 +291,7 @@ Most of the config in Warthog is done via environment variables (see `Config - E
 | ------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
 | container                 | TypeDI container. Warthog uses dependency injection under the hood.                                       | empty container                               |
 | authChecker               | An instance of an [AuthChecker](https://typegraphql.ml/docs/authorization.html) to secure your resolvers. |                                               |
-| context                   | Context getter of form `(request: Request) => Promise<object>`                                                     | empty                                         |
+| context                   | Context getter of form `(request: Request) => Promise<object>`                                            | empty                                         |
 | logger                    | Logger                                                                                                    | [debug](https://github.com/visionmedia/debug) |
 | middlewares               | [TypeGraphQL](https://typegraphql.ml/docs/middlewares.html) middlewares to add to your server             | none                                          |
 | onBeforeGraphQLMiddleware | Callback executed just before the Graphql server is started. The Express app is passed.                   | none                                          |

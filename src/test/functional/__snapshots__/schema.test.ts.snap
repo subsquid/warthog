@@ -1,7 +1,63 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`schema test schema doesn't change 1`] = `
-"interface BaseGraphQLObject {
+"type ApiOnly implements BaseGraphQLObject {
+  id: ID!
+  createdAt: DateTime!
+  createdById: String!
+  updatedAt: DateTime
+  updatedById: String
+  deletedAt: DateTime
+  deletedById: String
+  version: Int!
+  name: String!
+}
+
+input ApiOnlyCreateInput {
+  name: String!
+}
+
+input ApiOnlyUpdateInput {
+  name: String
+}
+
+input ApiOnlyWhereInput {
+  id_eq: ID
+  id_in: [ID!]
+  createdAt_eq: DateTime
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  createdById_eq: ID
+  createdById_in: [ID!]
+  updatedAt_eq: DateTime
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  updatedById_eq: ID
+  updatedById_in: [ID!]
+  deletedAt_all: Boolean
+  deletedAt_eq: DateTime
+  deletedAt_lt: DateTime
+  deletedAt_lte: DateTime
+  deletedAt_gt: DateTime
+  deletedAt_gte: DateTime
+  deletedById_eq: ID
+  deletedById_in: [ID!]
+  name_eq: String
+  name_contains: String
+  name_startsWith: String
+  name_endsWith: String
+  name_in: [String!]
+}
+
+input ApiOnlyWhereUniqueInput {
+  id: ID!
+}
+
+interface BaseGraphQLObject {
   id: ID!
   createdAt: DateTime!
   createdById: String!
@@ -59,9 +115,28 @@ input BaseWhereInput {
 }
 
 \\"\\"\\"
+A date string, such as 2007-12-03, compliant with the \`full-date\` format
+outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for
+representation of dates and times using the Gregorian calendar.
+\\"\\"\\"
+scalar Date
+
+\\"\\"\\"
 The javascript \`Date\` as string. Type represents date and time as the ISO Date string.
 \\"\\"\\"
 scalar DateTime
+
+type DbOnly implements BaseGraphQLObject {
+  id: ID!
+  createdAt: DateTime!
+  createdById: String!
+  updatedAt: DateTime
+  updatedById: String
+  deletedAt: DateTime
+  deletedById: String
+  version: Int!
+  stringField: String!
+}
 
 interface DeleteResponse {
   id: ID!
@@ -77,18 +152,26 @@ type Dish implements BaseGraphQLObject {
   deletedById: String
   version: Int!
   name: String!
+  stringEnumField: StringEnum
   kitchenSink: KitchenSink!
   kitchenSinkId: String!
 }
 
 type DishConnection {
-  nodes: [Dish!]!
+  totalCount: Int!
+  edges: [DishEdge!]!
   pageInfo: PageInfo!
 }
 
 input DishCreateInput {
   name: String!
+  stringEnumField: StringEnum
   kitchenSinkId: ID!
+}
+
+type DishEdge {
+  node: Dish!
+  cursor: String!
 }
 
 enum DishOrderByInput {
@@ -100,12 +183,15 @@ enum DishOrderByInput {
   deletedAt_DESC
   name_ASC
   name_DESC
+  stringEnumField_ASC
+  stringEnumField_DESC
   kitchenSinkId_ASC
   kitchenSinkId_DESC
 }
 
 input DishUpdateInput {
   name: String
+  stringEnumField: StringEnum
   kitchenSinkId: ID
 }
 
@@ -139,6 +225,8 @@ input DishWhereInput {
   name_startsWith: String
   name_endsWith: String
   name_in: [String!]
+  stringEnumField_eq: StringEnum
+  stringEnumField_in: [StringEnum!]
   kitchenSinkId_eq: ID
   kitchenSinkId_in: [ID!]
 }
@@ -166,6 +254,8 @@ type KitchenSink implements BaseGraphQLObject {
   stringField: String!
   nullableStringField: String
   dateField: DateTime
+  dateOnlyField: Date
+  dateTimeField: DateTime
   emailField: String!
   integerField: Int!
   booleanField: Boolean!
@@ -179,16 +269,23 @@ type KitchenSink implements BaseGraphQLObject {
   noFilterField: String
   noSortField: String
   noFilterOrSortField: String
+  stringFieldFilterEqContains: String
+  intFieldFilterLteGte: Int
   characterField: String
   customTextFieldNoSortOrFilter: String
+  customFieldArrayColumn: [String!]
   readonlyField: String
   apiOnlyField: String
+  arrayOfStrings: [String!]
+  arrayOfInts: [Int!]
 }
 
 input KitchenSinkCreateInput {
   stringField: String!
   nullableStringField: String
   dateField: DateTime
+  dateOnlyField: Date
+  dateTimeField: DateTime
   emailField: String!
   integerField: Float!
   booleanField: Boolean!
@@ -201,10 +298,15 @@ input KitchenSinkCreateInput {
   noFilterField: String
   noSortField: String
   noFilterOrSortField: String
+  stringFieldFilterEqContains: String
+  intFieldFilterLteGte: Float
   characterField: String
   customTextFieldNoSortOrFilter: String
+  customFieldArrayColumn: [String!]
   writeonlyField: String
   apiOnlyField: String
+  arrayOfStrings: [String!]
+  arrayOfInts: [Int!]
 }
 
 enum KitchenSinkOrderByInput {
@@ -220,6 +322,10 @@ enum KitchenSinkOrderByInput {
   nullableStringField_DESC
   dateField_ASC
   dateField_DESC
+  dateOnlyField_ASC
+  dateOnlyField_DESC
+  dateTimeField_ASC
+  dateTimeField_DESC
   emailField_ASC
   emailField_DESC
   integerField_ASC
@@ -250,6 +356,8 @@ input KitchenSinkUpdateInput {
   stringField: String
   nullableStringField: String
   dateField: DateTime
+  dateOnlyField: Date
+  dateTimeField: DateTime
   emailField: String
   integerField: Float
   booleanField: Boolean
@@ -262,10 +370,15 @@ input KitchenSinkUpdateInput {
   noFilterField: String
   noSortField: String
   noFilterOrSortField: String
+  stringFieldFilterEqContains: String
+  intFieldFilterLteGte: Float
   characterField: String
   customTextFieldNoSortOrFilter: String
+  customFieldArrayColumn: [String!]
   writeonlyField: String
   apiOnlyField: String
+  arrayOfStrings: [String!]
+  arrayOfInts: [Int!]
 }
 
 input KitchenSinkWhereInput {
@@ -308,6 +421,16 @@ input KitchenSinkWhereInput {
   dateField_lte: DateTime
   dateField_gt: DateTime
   dateField_gte: DateTime
+  dateOnlyField_eq: Date
+  dateOnlyField_lt: Date
+  dateOnlyField_lte: Date
+  dateOnlyField_gt: Date
+  dateOnlyField_gte: Date
+  dateTimeField_eq: DateTime
+  dateTimeField_lt: DateTime
+  dateTimeField_lte: DateTime
+  dateTimeField_gt: DateTime
+  dateTimeField_gte: DateTime
   emailField_eq: String
   emailField_contains: String
   emailField_startsWith: String
@@ -347,6 +470,10 @@ input KitchenSinkWhereInput {
   noSortField_startsWith: String
   noSortField_endsWith: String
   noSortField_in: [String!]
+  stringFieldFilterEqContains_eq: String
+  stringFieldFilterEqContains_contains: String
+  intFieldFilterLteGte_gte: Int
+  intFieldFilterLteGte_lte: Int
   characterField_eq: String
   characterField_contains: String
   characterField_startsWith: String
@@ -362,6 +489,12 @@ input KitchenSinkWhereInput {
   apiOnlyField_startsWith: String
   apiOnlyField_endsWith: String
   apiOnlyField_in: [String!]
+  arrayOfStrings_containsAll: [String!]
+  arrayOfStrings_containsNone: [String!]
+  arrayOfStrings_containsAny: [String!]
+  arrayOfInts_containsAll: [Int!]
+  arrayOfInts_containsNone: [Int!]
+  arrayOfInts_containsAny: [Int!]
 }
 
 input KitchenSinkWhereUniqueInput {
@@ -383,16 +516,15 @@ type Mutation {
 }
 
 type PageInfo {
-  limit: Float!
-  offset: Float!
-  totalCount: Float!
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
 }
 
 type Query {
   dishes(offset: Int, limit: Int = 50, where: DishWhereInput, orderBy: DishOrderByInput): [Dish!]!
-  dishConnection(offset: Int, limit: Int = 50, where: DishWhereInput, orderBy: DishOrderByInput): DishConnection!
+  dishConnection(first: Int, after: String, last: Int, before: String, where: DishWhereInput, orderBy: DishOrderByInput): DishConnection!
   dish(where: DishWhereUniqueInput!): Dish!
   kitchenSinks(offset: Int, limit: Int = 50, where: KitchenSinkWhereInput, orderBy: KitchenSinkOrderByInput): [KitchenSink!]!
   kitchenSink(where: KitchenSinkWhereUniqueInput!): KitchenSink!

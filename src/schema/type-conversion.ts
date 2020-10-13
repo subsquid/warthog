@@ -1,3 +1,4 @@
+import { DateResolver } from 'graphql-scalars';
 import {
   GraphQLBoolean,
   GraphQLFloat,
@@ -37,7 +38,10 @@ export function columnToGraphQLType(
       return GraphQLInt;
     case 'date':
       return GraphQLISODateTime;
-    // return GraphQLString; // V2: This should be GraphQLISODateTime
+    case 'datetime':
+      return GraphQLISODateTime;
+    case 'dateonly':
+      return DateResolver;
     case 'json':
       return GraphQLJSONObject;
     case 'enum':
@@ -64,7 +68,10 @@ export function columnTypeToGraphQLType(type: FieldType): GraphQLScalarType {
       return GraphQLInt;
     case 'date':
       return GraphQLISODateTime;
-    // return GraphQLString; // V2: This should be GraphQLISODateTime
+    case 'datetime':
+      return GraphQLISODateTime;
+    case 'dateonly':
+      return DateResolver;
     case 'json':
       return GraphQLJSONObject;
     case 'enum':
@@ -88,10 +95,13 @@ export function columnTypeToGraphQLDataType(type: FieldType, enumName?: string):
   }
 }
 
-// const ID_TYPE = 'ID';
 export function columnInfoToTypeScriptType(type: FieldType, enumName?: string): string {
   if (type === 'id') {
     return 'string'; // TODO: should this be ID_TYPE?
+  } else if (type === 'dateonly') {
+    return 'DateOnlyString';
+  } else if (type === 'datetime') {
+    return 'DateTimeString';
   } else if (enumName) {
     return String(enumName);
   } else if (type === 'numeric') {

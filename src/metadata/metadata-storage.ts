@@ -1,12 +1,14 @@
 import { GraphQLEnumType } from 'graphql';
 import { Container, Inject, Service } from 'typedi';
 
-import { ColumnType } from '../torm';
+import { ColumnType, WhereOperator } from '../torm';
 import { Config } from '../core';
 
 export type FieldType =
   | 'boolean'
   | 'date'
+  | 'dateonly'
+  | 'datetime'
   | 'email'
   | 'enum'
   | 'float'
@@ -21,7 +23,7 @@ export interface DecoratorCommonOptions {
   dbOnly?: boolean;
   description?: string;
   editable?: boolean;
-  filter?: boolean;
+  filter?: boolean | WhereOperator[];
   nullable?: boolean;
   readonly?: boolean;
   sort?: boolean;
@@ -37,7 +39,8 @@ export interface ColumnMetadata extends DecoratorCommonOptions {
   enum?: GraphQLEnumType;
   enumName?: string;
   unique?: boolean;
-  isArray?: boolean;
+  // isArray?: boolean;
+  array?: boolean;
 }
 
 export type ColumnOptions = Partial<ColumnMetadata>;
@@ -48,6 +51,8 @@ export interface ModelMetadata {
   klass?: any; // optional because Class decorators added after field decorators
   name: string;
   columns: ColumnMetadata[];
+  apiOnly?: boolean;
+  dbOnly?: boolean;
 }
 
 @Service('MetadataStorage')
@@ -156,7 +161,7 @@ export class MetadataStorage {
     ];
   }
 
-  addModel(name: string, klass: any, filename: string, options = {}) {
+  addModel(name: string, klass: any, filename: string, options: Partial<ModelMetadata> = {}) {
     if (this.interfaces.indexOf(name) > -1) {
       return; // Don't add interface types to model list
     }

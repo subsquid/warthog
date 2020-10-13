@@ -1,5 +1,35 @@
 import { SelectQueryBuilder } from 'typeorm';
 
+export type WhereOperator =
+  | 'eq'
+  | 'not'
+  | 'lt'
+  | 'lte'
+  | 'gt'
+  | 'gte'
+  | 'in'
+  | 'contains'
+  | 'startsWith'
+  | 'endsWith'
+  | 'json';
+
+type ExactWhereOperator = 'eq' | 'in';
+type NumberWhereOperator = 'eq' | 'gt' | 'gte' | 'lt' | 'lte' | 'in';
+type TextWhereOperator = 'eq' | 'contains' | 'startsWith' | 'endsWith' | 'in';
+type DateGeneralWhereOperator = 'eq' | 'lt' | 'lte' | 'gt' | 'gte';
+
+export type BooleanWhereOperator = ExactWhereOperator;
+export type DateWhereOperator = DateGeneralWhereOperator;
+export type DateOnlyWhereOperator = DateGeneralWhereOperator;
+export type DateTimeWhereOperator = DateGeneralWhereOperator;
+export type EmailWhereOperator = TextWhereOperator;
+export type EnumWhereOperator = ExactWhereOperator;
+export type FloatWhereOperator = NumberWhereOperator;
+export type IdWhereOperator = ExactWhereOperator;
+export type IntWhereOperator = NumberWhereOperator;
+export type NumericWhereOperator = NumberWhereOperator;
+export type StringWhereOperator = TextWhereOperator;
+
 export function addQueryBuilderWhereItem<E>(
   qb: SelectQueryBuilder<E>, // query builder will be mutated (chained) in this function
   parameterKey: string, // Paremeter key used in query builder
@@ -83,6 +113,19 @@ export function addQueryBuilderWhereItem<E>(
 
       return qb;
     }
+    // Postgres array functions: https://www.postgresql.org/docs/10/functions-array.html
+    case 'containsAll':
+      return qb.andWhere(`${columnWithAlias} @> :${parameterKey}`, {
+        [parameterKey]: value
+      });
+    case 'containsNone':
+      return qb.andWhere(`NOT (${columnWithAlias} && :${parameterKey})`, {
+        [parameterKey]: value
+      });
+    case 'containsAny':
+      return qb.andWhere(`${columnWithAlias} && :${parameterKey}`, {
+        [parameterKey]: value
+      });
     default:
       throw new Error(`Can't find operator ${operator}`);
   }

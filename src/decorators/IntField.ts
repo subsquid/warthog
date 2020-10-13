@@ -1,14 +1,16 @@
 import { Int } from 'type-graphql';
 
 import { DecoratorCommonOptions } from '../metadata';
+import { IntColumnType, IntWhereOperator } from '../torm';
 import { composeMethodDecorators } from '../utils';
-import { IntColumnType } from '../torm';
 
 import { getCombinedDecorator } from './getCombinedDecorator';
 
 interface IntFieldOptions extends DecoratorCommonOptions {
   dataType?: IntColumnType;
   default?: number;
+  filter?: boolean | IntWhereOperator[];
+  array?: boolean;
 }
 
 export function IntField(options: IntFieldOptions = {}): any {

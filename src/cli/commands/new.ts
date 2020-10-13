@@ -1,11 +1,15 @@
+import * as execa from 'execa';
+import { Toolbox } from 'gluegun/build/types/domain/toolbox';
+import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
-import * as fs from 'fs';
-const readdir = promisify(fs.readdir);
-const stat = promisify(fs.stat);
+
+const packageJson = require('../../../package.json'); // eslint-disable-line
 
 import { WarthogGluegunToolbox } from '../types';
-import { Toolbox } from 'gluegun/build/types/domain/toolbox';
+
+const readdir = promisify(fs.readdir);
+const stat = promisify(fs.stat);
 
 export default {
   name: 'new',
@@ -23,14 +27,25 @@ export default {
       name = String(n);
     }
 
+    let warthogVersion;
+    try {
+      const result = await execa.command('npm show warthog version');
+      warthogVersion = result.stdout;
+    } catch (error) {
+      warthogVersion = '^2'; // Default to version 2
+    }
+
     const props = {
       className: toolbox.strings.pascalCase(name),
       camelName: toolbox.strings.camelCase(name),
-      kebabName: toolbox.strings.kebabCase(name)
+      kebabName: toolbox.strings.kebabCase(name),
+      packageJson,
+      warthogVersion
     };
 
     const newFolder = toolbox.filesystem.path(__dirname, '../templates/new');
     const files = await getFileRecursive(newFolder);
+    const generateFolder = process.env.WARTHOG_CLI_GENERATE_PATH || process.cwd();
 
     files.forEach(async file => {
       const relativePath = path.relative(newFolder, file);
@@ -38,7 +53,7 @@ export default {
         toolbox,
         props,
         `new/${relativePath}`,
-        process.cwd(),
+        generateFolder,
         relativePath.slice(0, -4) // remove .ejs
       );
     });

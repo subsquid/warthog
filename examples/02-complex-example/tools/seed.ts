@@ -44,6 +44,19 @@ async function seedDatabase() {
       emptyArray: []
     };
     const dateField = new Date().toISOString();
+    const dateOnlyField = new Date().toISOString().substring(0, 10);
+    const dateTimeField = new Date().toISOString();
+
+    const randomCharacter = () => {
+      return Array.from({ length: 1 }, () => Math.random().toString(36)[2]).join('');
+    };
+
+    const randomInt = (max = 10) => {
+      return Math.round(Math.random() * max);
+    };
+
+    const arrayOfInts = Array.from({ length: randomInt(4) }, () => randomInt());
+    const arrayOfStrings = Array.from({ length: randomInt(4) }, () => randomCharacter());
 
     try {
       const user = await binding.mutation.createUser(
@@ -53,11 +66,15 @@ async function seedDatabase() {
             stringField,
             jsonField,
             dateField,
+            dateOnlyField,
+            dateTimeField,
             enumField: 'FOO',
             geometryField: {
               type: 'Point',
               coordinates: [Faker.random.number(100), Faker.random.number(200)]
-            }
+            },
+            arrayOfInts,
+            arrayOfStrings
           }
         },
         `{ id emailField createdAt createdById }`

@@ -1,3 +1,5 @@
+import * as path from 'path';
+import * as fs from 'fs';
 import { EntityMetadata } from 'typeorm';
 
 /* eslint-disable @typescript-eslint/camelcase */
@@ -7,7 +9,6 @@ import { Server } from '../../core/server';
 
 import { Binding, KitchenSinkWhereInput } from '../generated/binding';
 import { KitchenSink, StringEnum, Dish } from '../modules';
-import { setTestServerEnvironmentVariables } from '../server-vars';
 import { getTestServer } from '../test-server';
 
 import { KITCHEN_SINKS } from './fixtures';
@@ -16,6 +17,7 @@ import { callAPIError, callAPISuccess } from '../utils';
 import express = require('express');
 import * as request from 'supertest';
 import { ColumnMetadata } from 'typeorm/metadata/ColumnMetadata';
+import { EncodingService } from '../../core/encoding';
 
 let runKey: string;
 let server: Server<any>;
@@ -28,14 +30,9 @@ let onAfterCalled = false;
 let kitchenSink: KitchenSink;
 
 describe('server', () => {
-  beforeEach(() => {
-    jest.setTimeout(20000);
-  });
-
   // Make sure to clean up server
   beforeAll(async done => {
-    jest.setTimeout(20000);
-    setTestServerEnvironmentVariables();
+    // setTestServerEnvironmentVariables();
 
     runKey = String(new Date().getTime()); // used to ensure test runs create unique data
 
@@ -66,9 +63,13 @@ describe('server', () => {
       throw new Error(error);
     }
 
-    kitchenSink = await createKitchenSink(binding, 'hi@warthog.com');
-    await createManyDishes(binding, kitchenSink.id);
-    await createManyKitchenSinks(binding);
+    // sinksExist skips recreating seed data so that we can re-run tests in watch mode
+    const sinksExist = (await binding.query.kitchenSinks({ limit: 1 }, '{ id }')).length > 0;
+    if (!sinksExist) {
+      kitchenSink = await createKitchenSink(binding, 'hi@warthog.com');
+      await createManyDishes(binding, kitchenSink.id);
+      await createManyKitchenSinks(binding);
+    }
 
     done();
   });
@@ -125,34 +126,44 @@ describe('server', () => {
   });
 
   test('queries for dishes with pagination', async () => {
-    expect.assertions(6);
-    const { nodes, pageInfo } = await binding.query.dishConnection(
-      { offset: 0, orderBy: 'createdAt_ASC', limit: 1 },
-      `{
-          nodes {
-            name
-            kitchenSink {
-              emailField
-            }
-          }
-          pageInfo {
-            limit
-            offset
+    const { totalCount, edges, pageInfo } = await callAPISuccess(
+      binding.query.dishConnection(
+        { orderBy: 'name_ASC', first: 1 },
+        `{
             totalCount
-            hasNextPage
-            hasPreviousPage
-          }
-        }`
+            edges {
+              node {
+                name
+                kitchenSink {
+                  emailField
+                }
+              }
+              cursor
+            }
+            pageInfo {
+              hasNextPage
+              hasPreviousPage
+              startCursor
+              endCursor
+            }
+          }`
+      )
     );
 
-    console.log('test', nodes, pageInfo);
+    const encodingService = new EncodingService();
+    const decodedCursor: [string, string] = encodingService.decode(edges[0].cursor);
 
-    expect(nodes).toMatchSnapshot();
-    expect(pageInfo.offset).toEqual(0);
-    expect(pageInfo.limit).toEqual(1);
+    expect(decodedCursor[0]).toMatch(/Dish [0-9]+/);
+    expect(decodedCursor[1]).toMatch(/[A-Za-z0-9_-]{7,14}/);
+    expect(edges[0].node.name).toBeTruthy();
+    expect(edges[0].node.kitchenSink.emailField).toBeTruthy();
     expect(pageInfo.hasNextPage).toEqual(true);
     expect(pageInfo.hasPreviousPage).toEqual(false);
-    expect(pageInfo.totalCount).toEqual(20);
+    expect(totalCount).toEqual(20);
+  });
+
+  test.skip('Does not perform expensive totalCount operation if not needed', async () => {
+    //
   });
 
   test('throws errors when given bad input on a single create', async done => {
@@ -341,6 +352,113 @@ describe('server', () => {
     expect(result.length).toEqual(56);
     expect(result).toMatchSnapshot();
   });
+
+  test('find: dateOnlyField greater than or equal 2020-01-01', async () => {
+    expect.assertions(3);
+
+    const result = await binding.query.kitchenSinks(
+      { where: { dateOnlyField_gte: '2020-01-01' }, limit: 100 },
+      '{ stringField dateOnlyField }'
+    );
+
+    expect(result.length).toEqual(30);
+    expect(result[0].dateOnlyField!.length).toBe(10);
+    expect(result).toMatchSnapshot();
+  });
+
+  test('find: dateTimeField less than or equal 2020-01-01', async () => {
+    const result = await binding.query.kitchenSinks(
+      { where: { dateTimeField_lte: '2020-01-01' }, limit: 100 },
+      '{ stringField dateTimeField }'
+    );
+
+    expect(result.length).toEqual(69);
+    expect(result[0].dateTimeField!.length).toBe(24);
+    expect(result).toMatchSnapshot();
+  });
+
+  test('find: jsonField foo_eq: bar', async () => {
+    const result = await binding.query.kitchenSinks(
+      { where: { jsonField_json: { foo_eq: 'bar' } }, limit: 100 },
+      '{ stringField jsonField }'
+    );
+
+    expect(result.length).toEqual(29);
+    expect(result).toMatchSnapshot();
+  });
+
+  test('find: arrayOfInts_containsAll: [1, 2, 7]', async () => {
+    const result = await binding.query.kitchenSinks(
+      { where: { arrayOfInts_containsAll: [1, 2, 7] }, limit: 100 },
+      '{ stringField arrayOfInts }'
+    );
+
+    expect(result.length).toEqual(1);
+    expect(result).toMatchSnapshot();
+  });
+
+  test('find: arrayOfInts_containsAny: [1, 2, 7]', async () => {
+    const result = await binding.query.kitchenSinks(
+      { where: { arrayOfInts_containsAny: [1, 2, 7] }, limit: 100 },
+      '{ stringField arrayOfInts }'
+    );
+
+    expect(result.length).toEqual(46);
+    expect(result).toMatchSnapshot();
+  });
+
+  test('find: arrayOfInts_containsNone: [1, 2, 7]', async () => {
+    const result = await binding.query.kitchenSinks(
+      { where: { arrayOfInts_containsNone: [1, 2, 7] }, limit: 100 },
+      '{ stringField arrayOfInts }'
+    );
+
+    expect(result.length).toEqual(54);
+    expect(result).toMatchSnapshot();
+  });
+
+  test('find: arrayOfStrings_containsAll: [dog, cat]', async () => {
+    const result = await binding.query.kitchenSinks(
+      { where: { arrayOfStrings_containsAll: ['dog', 'cat'] }, limit: 100 },
+      '{ stringField arrayOfStrings }'
+    );
+
+    expect(result.length).toEqual(3);
+    expect(result).toMatchSnapshot();
+  });
+
+  test('find: arrayOfStrings_containsAny: [dog, cat]', async () => {
+    const result = await binding.query.kitchenSinks(
+      { where: { arrayOfStrings_containsAny: ['dog', 'cat'] }, limit: 100 },
+      '{ stringField arrayOfStrings }'
+    );
+
+    expect(result.length).toEqual(29);
+    expect(result).toMatchSnapshot();
+  });
+
+  test('find: arrayOfStrings_containsNone: [dog, cat]', async () => {
+    const result = await binding.query.kitchenSinks(
+      { where: { arrayOfStrings_containsNone: ['dog', 'cat'] }, limit: 100 },
+      '{ stringField arrayOfStrings }'
+    );
+
+    expect(result.length).toEqual(71);
+    expect(result).toMatchSnapshot();
+  });
+
+  //
+  //
+
+  // jsonField: {
+  //   foo: 'bar',
+  //   quia: 'autem'
+  // },
+  // arrayOfInts: [1],
+  // arrayOfStrings: []
+
+  //
+  //
 
   test('findOne: consequuntur-94489@a.com', async () => {
     expect.assertions(1);
@@ -597,9 +715,30 @@ describe('server', () => {
     // TypeORM comment support is currently broken
     // See: https://github.com/typeorm/typeorm/issues/5906
     test.skip('description maps to comment DB metadata', async done => {
-      console.log('stringFieldColumn', stringFieldColumn);
       expect(stringFieldColumn.comment).toEqual('This is a string field');
       done();
+    });
+  });
+
+  describe('ApiOnly Model', () => {
+    let apiOnlyEntityMeta: EntityMetadata;
+    beforeEach(() => {
+      apiOnlyEntityMeta = server.connection.entityMetadatas.find(
+        entity => entity.name === 'ApiOnly'
+      ) as EntityMetadata;
+    });
+
+    test('Does not exist in the DB', async done => {
+      expect(apiOnlyEntityMeta).toBeFalsy();
+      done();
+    });
+
+    test('Does exist in the API schema', () => {
+      const file = path.join(__dirname, '..', 'generated', 'schema.graphql');
+      const schema = fs.readFileSync(file, 'utf-8');
+
+      expect(schema).toContain('ApiOnly');
+      expect(schema).toContain('ApiOnlyWhereInput');
     });
   });
 });
@@ -677,5 +816,3 @@ function noSupertestRequestErrors(result: request.Response) {
   expect(result.clientError).toBe(false);
   expect(result.serverError).toBe(false);
 }
-
-/* eslint-enable @typescript-eslint/camelcase */

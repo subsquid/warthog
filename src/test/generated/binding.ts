@@ -7,7 +7,7 @@ import * as schema from  './schema.graphql'
 
 export interface Query {
     dishes: <T = Array<Dish>>(args: { offset?: Int | null, limit?: Int | null, where?: DishWhereInput | null, orderBy?: DishOrderByInput | null }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
-    dishConnection: <T = DishConnection>(args: { offset?: Int | null, limit?: Int | null, where?: DishWhereInput | null, orderBy?: DishOrderByInput | null }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
+    dishConnection: <T = DishConnection>(args: { first?: Int | null, after?: String | null, last?: Int | null, before?: String | null, where?: DishWhereInput | null, orderBy?: DishOrderByInput | null }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
     dish: <T = Dish>(args: { where: DishWhereUniqueInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
     kitchenSinks: <T = Array<KitchenSink>>(args: { offset?: Int | null, limit?: Int | null, where?: KitchenSinkWhereInput | null, orderBy?: KitchenSinkOrderByInput | null }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
     kitchenSink: <T = KitchenSink>(args: { where: KitchenSinkWhereUniqueInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> 
@@ -60,6 +60,8 @@ export type DishOrderByInput =   'createdAt_ASC' |
   'deletedAt_DESC' |
   'name_ASC' |
   'name_DESC' |
+  'stringEnumField_ASC' |
+  'stringEnumField_DESC' |
   'kitchenSinkId_ASC' |
   'kitchenSinkId_DESC'
 
@@ -75,6 +77,10 @@ export type KitchenSinkOrderByInput =   'createdAt_ASC' |
   'nullableStringField_DESC' |
   'dateField_ASC' |
   'dateField_DESC' |
+  'dateOnlyField_ASC' |
+  'dateOnlyField_DESC' |
+  'dateTimeField_ASC' |
+  'dateTimeField_DESC' |
   'emailField_ASC' |
   'emailField_DESC' |
   'integerField_ASC' |
@@ -103,6 +109,50 @@ export type KitchenSinkOrderByInput =   'createdAt_ASC' |
 export type StringEnum =   'FOO' |
   'BAR'
 
+export interface ApiOnlyCreateInput {
+  name: String
+}
+
+export interface ApiOnlyUpdateInput {
+  name?: String | null
+}
+
+export interface ApiOnlyWhereInput {
+  id_eq?: ID_Input | null
+  id_in?: ID_Output[] | ID_Output | null
+  createdAt_eq?: DateTime | null
+  createdAt_lt?: DateTime | null
+  createdAt_lte?: DateTime | null
+  createdAt_gt?: DateTime | null
+  createdAt_gte?: DateTime | null
+  createdById_eq?: ID_Input | null
+  createdById_in?: ID_Output[] | ID_Output | null
+  updatedAt_eq?: DateTime | null
+  updatedAt_lt?: DateTime | null
+  updatedAt_lte?: DateTime | null
+  updatedAt_gt?: DateTime | null
+  updatedAt_gte?: DateTime | null
+  updatedById_eq?: ID_Input | null
+  updatedById_in?: ID_Output[] | ID_Output | null
+  deletedAt_all?: Boolean | null
+  deletedAt_eq?: DateTime | null
+  deletedAt_lt?: DateTime | null
+  deletedAt_lte?: DateTime | null
+  deletedAt_gt?: DateTime | null
+  deletedAt_gte?: DateTime | null
+  deletedById_eq?: ID_Input | null
+  deletedById_in?: ID_Output[] | ID_Output | null
+  name_eq?: String | null
+  name_contains?: String | null
+  name_startsWith?: String | null
+  name_endsWith?: String | null
+  name_in?: String[] | String | null
+}
+
+export interface ApiOnlyWhereUniqueInput {
+  id: ID_Output
+}
+
 export interface BaseWhereInput {
   id_eq?: String | null
   id_in?: String[] | String | null
@@ -129,11 +179,13 @@ export interface BaseWhereInput {
 
 export interface DishCreateInput {
   name: String
+  stringEnumField?: StringEnum | null
   kitchenSinkId: ID_Output
 }
 
 export interface DishUpdateInput {
   name?: String | null
+  stringEnumField?: StringEnum | null
   kitchenSinkId?: ID_Input | null
 }
 
@@ -167,6 +219,8 @@ export interface DishWhereInput {
   name_startsWith?: String | null
   name_endsWith?: String | null
   name_in?: String[] | String | null
+  stringEnumField_eq?: StringEnum | null
+  stringEnumField_in?: StringEnum[] | StringEnum | null
   kitchenSinkId_eq?: ID_Input | null
   kitchenSinkId_in?: ID_Output[] | ID_Output | null
 }
@@ -179,6 +233,8 @@ export interface KitchenSinkCreateInput {
   stringField: String
   nullableStringField?: String | null
   dateField?: DateTime | null
+  dateOnlyField?: Date | null
+  dateTimeField?: DateTime | null
   emailField: String
   integerField: Float
   booleanField: Boolean
@@ -191,16 +247,23 @@ export interface KitchenSinkCreateInput {
   noFilterField?: String | null
   noSortField?: String | null
   noFilterOrSortField?: String | null
+  stringFieldFilterEqContains?: String | null
+  intFieldFilterLteGte?: Float | null
   characterField?: String | null
   customTextFieldNoSortOrFilter?: String | null
+  customFieldArrayColumn?: String[] | String | null
   writeonlyField?: String | null
   apiOnlyField?: String | null
+  arrayOfStrings?: String[] | String | null
+  arrayOfInts?: Int[] | Int | null
 }
 
 export interface KitchenSinkUpdateInput {
   stringField?: String | null
   nullableStringField?: String | null
   dateField?: DateTime | null
+  dateOnlyField?: Date | null
+  dateTimeField?: DateTime | null
   emailField?: String | null
   integerField?: Float | null
   booleanField?: Boolean | null
@@ -213,10 +276,15 @@ export interface KitchenSinkUpdateInput {
   noFilterField?: String | null
   noSortField?: String | null
   noFilterOrSortField?: String | null
+  stringFieldFilterEqContains?: String | null
+  intFieldFilterLteGte?: Float | null
   characterField?: String | null
   customTextFieldNoSortOrFilter?: String | null
+  customFieldArrayColumn?: String[] | String | null
   writeonlyField?: String | null
   apiOnlyField?: String | null
+  arrayOfStrings?: String[] | String | null
+  arrayOfInts?: Int[] | Int | null
 }
 
 export interface KitchenSinkWhereInput {
@@ -259,6 +327,16 @@ export interface KitchenSinkWhereInput {
   dateField_lte?: DateTime | null
   dateField_gt?: DateTime | null
   dateField_gte?: DateTime | null
+  dateOnlyField_eq?: Date | null
+  dateOnlyField_lt?: Date | null
+  dateOnlyField_lte?: Date | null
+  dateOnlyField_gt?: Date | null
+  dateOnlyField_gte?: Date | null
+  dateTimeField_eq?: DateTime | null
+  dateTimeField_lt?: DateTime | null
+  dateTimeField_lte?: DateTime | null
+  dateTimeField_gt?: DateTime | null
+  dateTimeField_gte?: DateTime | null
   emailField_eq?: String | null
   emailField_contains?: String | null
   emailField_startsWith?: String | null
@@ -298,6 +376,10 @@ export interface KitchenSinkWhereInput {
   noSortField_startsWith?: String | null
   noSortField_endsWith?: String | null
   noSortField_in?: String[] | String | null
+  stringFieldFilterEqContains_eq?: String | null
+  stringFieldFilterEqContains_contains?: String | null
+  intFieldFilterLteGte_gte?: Int | null
+  intFieldFilterLteGte_lte?: Int | null
   characterField_eq?: String | null
   characterField_contains?: String | null
   characterField_startsWith?: String | null
@@ -313,6 +395,12 @@ export interface KitchenSinkWhereInput {
   apiOnlyField_startsWith?: String | null
   apiOnlyField_endsWith?: String | null
   apiOnlyField_in?: String[] | String | null
+  arrayOfStrings_containsAll?: String[] | String | null
+  arrayOfStrings_containsNone?: String[] | String | null
+  arrayOfStrings_containsAny?: String[] | String | null
+  arrayOfInts_containsAll?: Int[] | Int | null
+  arrayOfInts_containsNone?: Int[] | Int | null
+  arrayOfInts_containsAny?: Int[] | Int | null
 }
 
 export interface KitchenSinkWhereUniqueInput {
@@ -333,6 +421,18 @@ export interface BaseGraphQLObject {
 
 export interface DeleteResponse {
   id: ID_Output
+}
+
+export interface ApiOnly extends BaseGraphQLObject {
+  id: ID_Output
+  createdAt: DateTime
+  createdById: String
+  updatedAt?: DateTime | null
+  updatedById?: String | null
+  deletedAt?: DateTime | null
+  deletedById?: String | null
+  version: Int
+  name: String
 }
 
 export interface BaseModel extends BaseGraphQLObject {
@@ -357,6 +457,18 @@ export interface BaseModelUUID extends BaseGraphQLObject {
   version: Int
 }
 
+export interface DbOnly extends BaseGraphQLObject {
+  id: ID_Output
+  createdAt: DateTime
+  createdById: String
+  updatedAt?: DateTime | null
+  updatedById?: String | null
+  deletedAt?: DateTime | null
+  deletedById?: String | null
+  version: Int
+  stringField: String
+}
+
 export interface Dish extends BaseGraphQLObject {
   id: ID_Output
   createdAt: DateTime
@@ -367,13 +479,20 @@ export interface Dish extends BaseGraphQLObject {
   deletedById?: String | null
   version: Int
   name: String
+  stringEnumField?: StringEnum | null
   kitchenSink: KitchenSink
   kitchenSinkId: String
 }
 
 export interface DishConnection {
-  nodes: Array<Dish>
+  totalCount: Int
+  edges: Array<DishEdge>
   pageInfo: PageInfo
+}
+
+export interface DishEdge {
+  node: Dish
+  cursor: String
 }
 
 export interface KitchenSink extends BaseGraphQLObject {
@@ -388,6 +507,8 @@ export interface KitchenSink extends BaseGraphQLObject {
   stringField: String
   nullableStringField?: String | null
   dateField?: DateTime | null
+  dateOnlyField?: Date | null
+  dateTimeField?: DateTime | null
   emailField: String
   integerField: Int
   booleanField: Boolean
@@ -401,18 +522,22 @@ export interface KitchenSink extends BaseGraphQLObject {
   noFilterField?: String | null
   noSortField?: String | null
   noFilterOrSortField?: String | null
+  stringFieldFilterEqContains?: String | null
+  intFieldFilterLteGte?: Int | null
   characterField?: String | null
   customTextFieldNoSortOrFilter?: String | null
+  customFieldArrayColumn?: Array<String> | null
   readonlyField?: String | null
   apiOnlyField?: String | null
+  arrayOfStrings?: Array<String> | null
+  arrayOfInts?: Array<Int> | null
 }
 
 export interface PageInfo {
-  limit: Float
-  offset: Float
-  totalCount: Float
   hasNextPage: Boolean
   hasPreviousPage: Boolean
+  startCursor?: String | null
+  endCursor?: String | null
 }
 
 export interface StandardDeleteResponse {
@@ -423,6 +548,13 @@ export interface StandardDeleteResponse {
 The `Boolean` scalar type represents `true` or `false`.
 */
 export type Boolean = boolean
+
+/*
+A date string, such as 2007-12-03, compliant with the `full-date` format
+outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for
+representation of dates and times using the Gregorian calendar.
+*/
+export type Date = string
 
 /*
 The javascript `Date` as string. Type represents date and time as the ISO Date string.

@@ -1,8 +1,9 @@
 {
   "extends": "./tsconfig.json",
+  "types": ["jest", "isomorphic-fetch", "node"],
   "compilerOptions": {
     "strict": false
   },
-  "exclude": ["node_modules", "**/node_modules/*", "examples"],
-  "include": ["src/**/*", "test/**/*", "typings"]
+  "include": ["src/**/*", "test/**/*", "typings"],
+  "exclude": ["node_modules", "tmp", "**/node_modules/*", "examples"]
 }

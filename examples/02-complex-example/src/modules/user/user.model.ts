@@ -4,6 +4,10 @@ import {
   BooleanField,
   CustomField,
   DateField,
+  DateOnlyField,
+  DateOnlyString,
+  DateTimeField,
+  DateTimeString,
   EmailField,
   EnumField,
   IdField,
@@ -32,8 +36,14 @@ export class User extends BaseModel {
   @DateField({ nullable: true })
   dateField: Date;
 
+  @DateOnlyField({ nullable: true })
+  dateOnlyField?: DateOnlyString;
+
+  @DateTimeField({ nullable: true })
+  dateTimeField?: DateTimeString;
+
   @EmailField({ nullable: true })
-  emailField: string;
+  emailField?: string;
 
   @EnumField('StringEnum', StringEnum, { nullable: true })
   enumField: StringEnum;
@@ -91,6 +101,12 @@ export class User extends BaseModel {
   @StringField({ filter: false, sort: false, nullable: true })
   noFilterOrSortField?: string;
 
+  @StringField({ filter: ['eq', 'contains'], sort: false, nullable: true })
+  stringFieldFilterEqContains?: string;
+
+  @IntField({ filter: ['lte', 'gte'], sort: false, nullable: true })
+  intFieldFilterLteGte?: number;
+
   // See https://github.com/typeorm/typeorm/blob/a4dec02cc59d3219a29c7be0322af2253e1452dc/test/functional/database-schema/column-types/postgres/entity/PostWithOptions.ts
   // Numeric fields (exact precision)
   @NumericField({ nullable: true })
@@ -115,6 +131,7 @@ export class User extends BaseModel {
   @StringField({ dataType: 'varchar', nullable: true })
   varcharField: string;
 
+  // DOCUMENTATION TODO
   // Spacial fields
   // https://github.com/typeorm/typeorm/blob/master/test/functional/spatial/postgres/entity/Post.ts
   @CustomField({
@@ -176,6 +193,12 @@ export class User extends BaseModel {
 
   @StringField({ dbOnly: true, nullable: true })
   dbOnlyField!: string;
+
+  @StringField({ array: true, nullable: true })
+  arrayOfStrings!: string[];
+
+  @IntField({ array: true, nullable: true })
+  arrayOfInts!: number[];
 
   // TODO: ForeignKeyField
 }

@@ -55,6 +55,10 @@ export type UserOrderByInput =   'createdAt_ASC' |
   'booleanField_DESC' |
   'dateField_ASC' |
   'dateField_DESC' |
+  'dateOnlyField_ASC' |
+  'dateOnlyField_DESC' |
+  'dateTimeField_ASC' |
+  'dateTimeField_DESC' |
   'emailField_ASC' |
   'emailField_DESC' |
   'enumField_ASC' |
@@ -137,6 +141,8 @@ export interface BaseWhereInput {
 export interface UserCreateInput {
   booleanField?: Boolean | null
   dateField?: DateTime | null
+  dateOnlyField?: Date | null
+  dateTimeField?: DateTime | null
   emailField?: String | null
   enumField?: StringEnum | null
   floatField?: Float | null
@@ -151,6 +157,8 @@ export interface UserCreateInput {
   noFilterField?: String | null
   noSortField?: String | null
   noFilterOrSortField?: String | null
+  stringFieldFilterEqContains?: String | null
+  intFieldFilterLteGte?: Float | null
   numericField?: Float | null
   numericFieldCustomPrecisionScale?: Float | null
   charField?: String | null
@@ -170,11 +178,15 @@ export interface UserCreateInput {
   password?: String | null
   writeonlyField?: String | null
   apiOnlyField?: String | null
+  arrayOfStrings?: String[] | String | null
+  arrayOfInts?: Int[] | Int | null
 }
 
 export interface UserUpdateInput {
   booleanField?: Boolean | null
   dateField?: DateTime | null
+  dateOnlyField?: Date | null
+  dateTimeField?: DateTime | null
   emailField?: String | null
   enumField?: StringEnum | null
   floatField?: Float | null
@@ -189,6 +201,8 @@ export interface UserUpdateInput {
   noFilterField?: String | null
   noSortField?: String | null
   noFilterOrSortField?: String | null
+  stringFieldFilterEqContains?: String | null
+  intFieldFilterLteGte?: Float | null
   numericField?: Float | null
   numericFieldCustomPrecisionScale?: Float | null
   charField?: String | null
@@ -208,6 +222,8 @@ export interface UserUpdateInput {
   password?: String | null
   writeonlyField?: String | null
   apiOnlyField?: String | null
+  arrayOfStrings?: String[] | String | null
+  arrayOfInts?: Int[] | Int | null
 }
 
 export interface UserWhereInput {
@@ -242,6 +258,16 @@ export interface UserWhereInput {
   dateField_lte?: DateTime | null
   dateField_gt?: DateTime | null
   dateField_gte?: DateTime | null
+  dateOnlyField_eq?: Date | null
+  dateOnlyField_lt?: Date | null
+  dateOnlyField_lte?: Date | null
+  dateOnlyField_gt?: Date | null
+  dateOnlyField_gte?: Date | null
+  dateTimeField_eq?: DateTime | null
+  dateTimeField_lt?: DateTime | null
+  dateTimeField_lte?: DateTime | null
+  dateTimeField_gt?: DateTime | null
+  dateTimeField_gte?: DateTime | null
   emailField_eq?: String | null
   emailField_contains?: String | null
   emailField_startsWith?: String | null
@@ -292,6 +318,10 @@ export interface UserWhereInput {
   noSortField_startsWith?: String | null
   noSortField_endsWith?: String | null
   noSortField_in?: String[] | String | null
+  stringFieldFilterEqContains_eq?: String | null
+  stringFieldFilterEqContains_contains?: String | null
+  intFieldFilterLteGte_gte?: Int | null
+  intFieldFilterLteGte_lte?: Int | null
   numericField_eq?: Float | null
   numericField_gt?: Float | null
   numericField_gte?: Float | null
@@ -387,6 +417,12 @@ export interface UserWhereInput {
   apiOnlyField_startsWith?: String | null
   apiOnlyField_endsWith?: String | null
   apiOnlyField_in?: String[] | String | null
+  arrayOfStrings_containsAll?: String[] | String | null
+  arrayOfStrings_containsNone?: String[] | String | null
+  arrayOfStrings_containsAny?: String[] | String | null
+  arrayOfInts_containsAll?: Int[] | Int | null
+  arrayOfInts_containsNone?: Int[] | Int | null
+  arrayOfInts_containsAny?: Int[] | Int | null
 }
 
 export interface UserWhereUniqueInput {
@@ -456,6 +492,8 @@ export interface User extends BaseGraphQLObject {
   version: Int
   booleanField?: Boolean | null
   dateField?: DateTime | null
+  dateOnlyField?: Date | null
+  dateTimeField?: DateTime | null
   emailField?: String | null
   enumField?: StringEnum | null
   floatField?: Float | null
@@ -470,6 +508,8 @@ export interface User extends BaseGraphQLObject {
   noFilterField?: String | null
   noSortField?: String | null
   noFilterOrSortField?: String | null
+  stringFieldFilterEqContains?: String | null
+  intFieldFilterLteGte?: Int | null
   numericField?: Float | null
   numericFieldCustomPrecisionScale?: Float | null
   charField?: String | null
@@ -488,12 +528,21 @@ export interface User extends BaseGraphQLObject {
   doublePrecisionField?: Float | null
   readonlyField?: String | null
   apiOnlyField?: String | null
+  arrayOfStrings?: Array<String> | null
+  arrayOfInts?: Array<Int> | null
 }
 
 /*
 The `Boolean` scalar type represents `true` or `false`.
 */
 export type Boolean = boolean
+
+/*
+A date string, such as 2007-12-03, compliant with the `full-date` format
+outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for
+representation of dates and times using the Gregorian calendar.
+*/
+export type Date = string
 
 /*
 The javascript `Date` as string. Type represents date and time as the ISO Date string.

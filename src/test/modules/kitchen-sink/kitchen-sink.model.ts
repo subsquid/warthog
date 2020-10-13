@@ -5,6 +5,10 @@ import {
   BooleanField,
   CustomField,
   DateField,
+  DateOnlyField,
+  DateOnlyString,
+  DateTimeField,
+  DateTimeString,
   EmailField,
   EnumField,
   FloatField,
@@ -20,12 +24,8 @@ import {
 
 import { Dish } from '../dish/dish.model';
 
-// Note: this must be exported and in the same file where it's attached with @EnumField
-// Also - must use string enums
-export enum StringEnum {
-  FOO = 'FOO',
-  BAR = 'BAR'
-}
+import { StringEnum } from '../shared';
+export { StringEnum }; // Warthog requires this
 
 @Model()
 export class KitchenSink extends BaseModel {
@@ -37,6 +37,12 @@ export class KitchenSink extends BaseModel {
 
   @DateField({ nullable: true })
   dateField?: Date;
+
+  @DateOnlyField({ nullable: true })
+  dateOnlyField?: DateOnlyString;
+
+  @DateTimeField({ nullable: true })
+  dateTimeField?: DateTimeString;
 
   @EmailField()
   emailField!: string;
@@ -83,6 +89,12 @@ export class KitchenSink extends BaseModel {
   @StringField({ filter: false, sort: false, nullable: true })
   noFilterOrSortField?: string;
 
+  @StringField({ filter: ['eq', 'contains'], sort: false, nullable: true })
+  stringFieldFilterEqContains?: string;
+
+  @IntField({ filter: ['lte', 'gte'], sort: false, nullable: true })
+  intFieldFilterLteGte?: number;
+
   @StringField({ dataType: 'character', nullable: true })
   characterField?: string;
 
@@ -91,6 +103,12 @@ export class KitchenSink extends BaseModel {
     db: { type: 'text', nullable: true }
   })
   customTextFieldNoSortOrFilter?: string;
+
+  @CustomField({
+    api: { type: 'string', nullable: true, sort: false, filter: false },
+    db: { type: 'text', nullable: true, array: true }
+  })
+  customFieldArrayColumn?: string[];
 
   @StringField({ readonly: true, nullable: true })
   readonlyField?: string;
@@ -103,4 +121,10 @@ export class KitchenSink extends BaseModel {
 
   @StringField({ apiOnly: true, nullable: true })
   apiOnlyField?: string;
+
+  @StringField({ array: true, nullable: true })
+  arrayOfStrings!: string[];
+
+  @IntField({ array: true, nullable: true })
+  arrayOfInts!: number[];
 }
