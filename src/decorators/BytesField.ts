@@ -1,40 +1,29 @@
 import { ColumnNumericOptions } from 'typeorm/decorator/options/ColumnNumericOptions';
 import { ColumnCommonOptions } from 'typeorm/decorator/options/ColumnCommonOptions';
-import { ValueTransformer } from 'typeorm';
 
 import { DecoratorCommonOptions } from '../metadata';
 import { composeMethodDecorators } from '../utils';
-import { ByteaColumnType } from '../torm';
+import { ByteaColumnType, StringWhereOperator } from '../torm';
+import { Bytes } from '../tgql';
 
 import { getCombinedDecorator } from './getCombinedDecorator';
-
-class BytesTransformer implements ValueTransformer {
-  to(value: Buffer) {
-    return value;
-  }
-
-  from(value: Buffer) {
-    return value ? '0x' + value.toString('hex') : value;
-  }
-}
 
 interface BytesFieldOptions
   extends ColumnCommonOptions,
     ColumnNumericOptions,
     DecoratorCommonOptions {
   dataType?: ByteaColumnType;
+  filter?: boolean | StringWhereOperator[];
 }
 
 export function BytesField(options: BytesFieldOptions = {}): any {
   const { dataType, filter, sort, ...dbOptions } = options;
   const nullableOption = options.nullable === true ? { nullable: true } : {};
 
-  dbOptions.transformer = new BytesTransformer();
-
   const factories = getCombinedDecorator({
-    fieldType: 'string',
+    fieldType: 'bytea',
     warthogColumnMeta: options,
-    gqlFieldType: String,
+    gqlFieldType: Bytes,
     dbType: 'bytea',
     dbColumnOptions: { ...nullableOption, ...dbOptions }
   });

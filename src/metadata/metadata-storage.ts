@@ -16,7 +16,8 @@ export type FieldType =
   | 'integer'
   | 'json'
   | 'numeric'
-  | 'string';
+  | 'string'
+  | 'bytea';
 
 export interface DecoratorCommonOptions {
   apiOnly?: boolean;

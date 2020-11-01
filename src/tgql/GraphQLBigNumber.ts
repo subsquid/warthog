@@ -8,6 +8,6 @@ export const GraphQLBigNumber = new GraphQLScalarType({
     return value; // value from the client input variables
   },
   serialize(value: BN) {
-    return value ? value.toString() : ''; // value sent to the client
+    return value ? value.toString() : value; // value sent to the client
   }
 });

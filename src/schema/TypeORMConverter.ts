@@ -476,6 +476,19 @@ export function entityToWhereInput(model: ModelMetadata): string {
         @TypeGraphQLField(() => GraphQLJSONObject, { nullable: true })
         ${column.propertyName}_json?: JsonObject;
       `;
+    } else if (column.type === 'bytea') {
+      if (allowFilter('eq')) {
+        fieldTemplates += `
+          @TypeGraphQLField(() => ${graphQLDataType}, { nullable: true })
+          ${column.propertyName}_eq?: ${tsType};
+        `;
+      }
+      if (allowFilter('in')) {
+        fieldTemplates += `
+          @TypeGraphQLField(() => [${graphQLDataType}], { nullable: true })
+          ${column.propertyName}_in?: ${tsType}[];
+      `;
+      }
     }
 
     if (column.isArray) {
@@ -573,6 +586,7 @@ function columnRequiresExplicitGQLType(column: ColumnMetadata) {
     column.type === 'date' ||
     column.type === 'datetime' ||
     column.type === 'dateonly' ||
-    column.type === 'numeric'
+    column.type === 'numeric' ||
+    column.type === 'bytea'
   );
 }

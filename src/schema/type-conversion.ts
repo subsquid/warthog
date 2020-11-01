@@ -14,6 +14,7 @@ import { GraphQLBigNumber } from '../tgql/GraphQLBigNumber';
 const { GraphQLJSONObject } = require('graphql-type-json');
 
 import { FieldType } from '../metadata';
+import { Bytes } from '../tgql';
 
 export function columnToGraphQLType(
   type: FieldType,
@@ -35,6 +36,8 @@ export function columnToGraphQLType(
       return GraphQLFloat;
     case 'numeric':
       return GraphQLBigNumber;
+    case 'bytea':
+      return Bytes;
     case 'integer':
       return GraphQLInt;
     case 'date':
@@ -64,6 +67,8 @@ export function columnTypeToGraphQLType(type: FieldType): GraphQLScalarType {
       return GraphQLFloat;
     case 'numeric':
       return GraphQLBigNumber;
+    case 'bytea':
+      return Bytes;
     case 'integer':
       return GraphQLInt;
     case 'date':
@@ -106,6 +111,8 @@ export function columnInfoToTypeScriptType(type: FieldType, enumName?: string): 
     return String(enumName);
   } else if (type === 'numeric') {
     return 'BN';
+  } else if (type === 'bytea') {
+    return 'Buffer';
   } else {
     const graphqlType = columnTypeToGraphQLDataType(type, enumName);
     const typeMap: any = {
