@@ -572,6 +572,7 @@ function columnRequiresExplicitGQLType(column: ColumnMetadata) {
     column.type === 'id' ||
     column.type === 'date' ||
     column.type === 'datetime' ||
-    column.type === 'dateonly'
+    column.type === 'dateonly' ||
+    column.type === 'numeric'
   );
 }

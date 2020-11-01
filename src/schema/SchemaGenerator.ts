@@ -43,12 +43,14 @@ export class SchemaGenerator {
       // @ts-ignore
       import { registerEnumType, GraphQLISODateTime as DateTime } from "type-graphql";
 
+      import * as BN from 'bn.js';
+
       // prettier-ignore
       // @ts-ignore eslint-disable-next-line @typescript-eslint/no-var-requires
       const { GraphQLJSONObject } = require('graphql-type-json');
       // prettier-ignore
       // @ts-ignore
-      import { BaseWhereInput, JsonObject, PaginationArgs, DateOnlyString, DateTimeString } from '${warthogImportPath}';
+      import { BaseWhereInput, JsonObject, PaginationArgs, DateOnlyString, DateTimeString, BigNumber } from '${warthogImportPath}';
 
       ${generateEnumMapImports().join('')}
       ${generateClassImports().join('')}

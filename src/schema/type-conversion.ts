@@ -8,6 +8,7 @@ import {
   GraphQLString
 } from 'graphql';
 import { GraphQLISODateTime } from 'type-graphql';
+import { GraphQLBigNumber } from '../tgql/GraphQLBigNumber';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { GraphQLJSONObject } = require('graphql-type-json');
@@ -33,7 +34,7 @@ export function columnToGraphQLType(
     case 'float':
       return GraphQLFloat;
     case 'numeric':
-      return GraphQLString;
+      return GraphQLBigNumber;
     case 'integer':
       return GraphQLInt;
     case 'date':
@@ -62,8 +63,7 @@ export function columnTypeToGraphQLType(type: FieldType): GraphQLScalarType {
     case 'float':
       return GraphQLFloat;
     case 'numeric':
-      // Postgres nodejs driver use string for numeric type
-      return GraphQLString;
+      return GraphQLBigNumber;
     case 'integer':
       return GraphQLInt;
     case 'date':
@@ -105,8 +105,7 @@ export function columnInfoToTypeScriptType(type: FieldType, enumName?: string): 
   } else if (enumName) {
     return String(enumName);
   } else if (type === 'numeric') {
-    // postgres nodejs driver use string type or numeric type
-    return 'string';
+    return 'BN';
   } else {
     const graphqlType = columnTypeToGraphQLDataType(type, enumName);
     const typeMap: any = {

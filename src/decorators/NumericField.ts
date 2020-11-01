@@ -4,6 +4,7 @@ import { ColumnCommonOptions } from 'typeorm/decorator/options/ColumnCommonOptio
 import { DecoratorCommonOptions } from '../metadata';
 import { composeMethodDecorators } from '../utils';
 import { NumericColumnType, NumericWhereOperator } from '../torm';
+import { GraphQLBigNumber } from '../tgql/GraphQLBigNumber';
 
 import { getCombinedDecorator } from './getCombinedDecorator';
 
@@ -22,7 +23,7 @@ export function NumericField(options: NumericFieldOptions = {}): any {
   const factories = getCombinedDecorator({
     fieldType: 'numeric',
     warthogColumnMeta: options,
-    gqlFieldType: String,
+    gqlFieldType: GraphQLBigNumber,
     dbType: options.dataType ?? 'numeric',
     dbColumnOptions: { ...nullableOption, ...dbOptions }
   });
