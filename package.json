@@ -1,6 +1,6 @@
 {
   "name": "warthog",
-  "version": "0.0.0-development",
+  "version": "2.20",
   "description": "Opinionated set of tools for setting up GraphQL backed by TypeORM",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -30,7 +30,7 @@
     "test": "./tools/test.sh",
     "test:prod": "NODE_ENV=production ./tools/test.sh",
     "test:watch": "./tools/test.sh --watch",
-    "packk": "yarn build && rm warthog-v0.0.0-development.tgz && yarn pack"
+    "packk": "yarn build && yarn pack"
   },
   "husky": {
     "hooks": {
