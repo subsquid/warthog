@@ -2,8 +2,8 @@ import { GraphQLScalarType } from 'graphql';
 import * as BN from 'bn.js';
 
 export const GraphQLBigNumber = new GraphQLScalarType({
-  name: 'BigNumber',
-  description: 'GraphQL representation of BigNumber',
+  name: 'BigInt',
+  description: 'GraphQL representation of BigInt',
   parseValue(value: string | number) {
     return value; // value from the client input variables
   },

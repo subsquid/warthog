@@ -50,7 +50,7 @@ export class SchemaGenerator {
       const { GraphQLJSONObject } = require('graphql-type-json');
       // prettier-ignore
       // @ts-ignore
-      import { BaseWhereInput, JsonObject, PaginationArgs, DateOnlyString, DateTimeString, BigNumber, Bytes } from '${warthogImportPath}';
+      import { BaseWhereInput, JsonObject, PaginationArgs, DateOnlyString, DateTimeString, BigInt, Bytes } from '${warthogImportPath}';
 
       ${generateEnumMapImports().join('')}
       ${generateClassImports().join('')}

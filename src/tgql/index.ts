@@ -8,7 +8,7 @@ export * from './DeleteResponse';
 export * from './PageInfo';
 export * from './PaginationArgs';
 export { loadFromGlobArray } from './loadGlobs';
-export { GraphQLBigNumber as BigNumber } from './GraphQLBigNumber';
+export { GraphQLBigNumber as BigInt } from './GraphQLBigNumber';
 export { GraphQLBytes as Bytes } from './GraphQLBytes';
 
 export { StandardDeleteResponse };
