@@ -5,7 +5,7 @@ import { composeMethodDecorators, MethodDecoratorFactory } from '../utils';
 
 export function ManyToMany(parentType: any, joinFunc: any, options: any = {}): any {
   const factories = [
-    Field(() => [parentType()], { nullable: true, ...options }) as MethodDecoratorFactory,
+    Field(() => [parentType()], { ...options }) as MethodDecoratorFactory,
     TypeORMManyToMany(parentType, joinFunc, options) as MethodDecoratorFactory
   ];
 

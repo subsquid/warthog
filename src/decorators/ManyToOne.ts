@@ -29,9 +29,7 @@ export function ManyToOne(parentType: any, joinFunc: any, options: any = {}): an
 
   // NOTE: this is unnecessary, but I'm keeping it around because otherwise it will generate the schema properties in a different order
   // It could otherwise safely be deleted
-  const graphQLdecorator = [
-    Field(parentType, { nullable: true, ...options }) as MethodDecoratorFactory
-  ];
+  const graphQLdecorator = [Field(parentType, { ...options }) as MethodDecoratorFactory];
   // END NOTE
 
   const factories: MethodDecoratorFactory[] = [

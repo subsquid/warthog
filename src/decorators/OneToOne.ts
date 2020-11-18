@@ -3,10 +3,10 @@ import { OneToOne as TypeORMOneToOne } from 'typeorm';
 
 import { composeMethodDecorators, MethodDecoratorFactory } from '../utils';
 
-export function OneToOne(parentType: any, options: any = {}): any {
+export function OneToOne(parentType: any, joinFunc: any, options: any = {}): any {
   const factories = [
-    Field(parentType, { nullable: true, ...options }) as MethodDecoratorFactory,
-    TypeORMOneToOne(parentType, options) as MethodDecoratorFactory
+    Field(parentType, { ...options }) as MethodDecoratorFactory,
+    TypeORMOneToOne(parentType, joinFunc, options) as MethodDecoratorFactory
   ];
 
   return composeMethodDecorators(...factories);

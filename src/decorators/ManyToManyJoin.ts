@@ -9,7 +9,7 @@ import { composeMethodDecorators, MethodDecoratorFactory } from '../utils';
 export function ManyToManyJoin(parentType: any, joinFunc: any, options: any = {}): any {
   const factories = [
     JoinTable() as MethodDecoratorFactory,
-    Field(() => [parentType()], { nullable: true, ...options }) as MethodDecoratorFactory,
+    Field(() => [parentType()], { ...options }) as MethodDecoratorFactory,
     TypeORMManyToMany(parentType, joinFunc, options) as MethodDecoratorFactory
   ];
 

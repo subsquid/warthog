@@ -7,7 +7,7 @@ import { composeMethodDecorators, MethodDecoratorFactory } from '../utils';
 // To be used in model.ejs
 export { JoinColumn };
 
-export function OneToOneJoin(parentType: any, options: any = {}): any {
+export function OneToOneJoin(parentType: any, joinFunc: any, options: any = {}): any {
   // Need to grab the class name from within a decorator
   let klass: string;
   const extractClassName = (target: any): any => {
@@ -30,14 +30,12 @@ export function OneToOneJoin(parentType: any, options: any = {}): any {
 
   // NOTE: this is unnecessary, but I'm keeping it around because otherwise it will generate the schema properties in a different order
   // It could otherwise safely be deleted
-  const graphQLdecorator = [
-    Field(parentType, { nullable: true, ...options }) as MethodDecoratorFactory
-  ];
+  const graphQLdecorator = [Field(parentType, { ...options }) as MethodDecoratorFactory];
   // END NOTE
   const factories = [
     extractClassName,
     ...graphQLdecorator,
-    TypeORMOneToOne(parentType, options) as MethodDecoratorFactory,
+    TypeORMOneToOne(parentType, joinFunc, options) as MethodDecoratorFactory,
     JoinColumn() as MethodDecoratorFactory,
     createForeignKeyField
   ];
