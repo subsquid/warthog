@@ -55,7 +55,9 @@ export function addQueryBuilderWhereItem<E>(
       return qb.andWhere(`${columnWithAlias} >= :${parameterKey}`, { [parameterKey]: value });
     case 'in':
       // IN (:... is the syntax for exploding array params into (?, ?, ?) in QueryBuilder
-      return qb.andWhere(`${columnWithAlias} IN (:...${parameterKey})`, { [parameterKey]: value });
+      return qb.andWhere(`${columnWithAlias} IN (:...${parameterKey})`, {
+        [parameterKey]: value.length ? value : ['']
+      });
     case 'contains':
       return qb.andWhere(`${columnWithAlias} ILIKE :${parameterKey}`, {
         [parameterKey]: `%${value}%`
