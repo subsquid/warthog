@@ -60,7 +60,8 @@ export function generateEnumMapImports(): string[] {
       imported.add(enumColumn.name);
 
       const filename = filenameToImportPath(enumColumn.filename);
-      imports.push(`import { ${enumColumn.name} } from '${filename}'`);
+      imports.push(`import { ${enumColumn.name} } from '${filename}'
+`);
       imported.add(enumColumn.name);
     });
   });
