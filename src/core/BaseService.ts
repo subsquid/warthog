@@ -162,15 +162,13 @@ export class BaseService<E extends BaseModel> {
       requestedFields.selectFields
     );
 
-    let rawData;
     let totalCountOption = {};
     if (requestedFields.totalCount) {
-      let totalCount;
-      [rawData, totalCount] = await qb.getManyAndCount();
-      totalCountOption = { totalCount };
-    } else {
-      rawData = await qb.getMany();
+      // We need to get total count without applying limit. totalCount should return same result for the same where input
+      // no matter which relay option is applied (after, after)
+      totalCountOption = { totalCount: await this.buildFindQuery<W>(whereUserInput).getCount() };
     }
+    const rawData = await qb.getMany();
 
     // If we got the n+1 that we requested, pluck the last item off
     const returnData = rawData.length > limit ? rawData.slice(0, limit) : rawData;
