@@ -108,11 +108,12 @@ export class BaseService<E extends BaseModel> {
     orderBy?: string,
     limit?: number,
     offset?: number,
-    fields?: string[]
+    fields?: string[],
+    options?: BaseOptions
   ): Promise<E[]> {
     // TODO: FEATURE - make the default limit configurable
     limit = limit ?? 20;
-    return this.buildFindQuery<W>(where, orderBy, { limit, offset }, fields).getMany();
+    return this.buildFindQuery<W>(where, orderBy, { limit, offset }, fields, options).getMany();
   }
 
   @debug('base-service:findConnection')
@@ -120,7 +121,8 @@ export class BaseService<E extends BaseModel> {
     whereUserInput: any = {}, // V3: WhereExpression = {},
     orderBy?: string | string[],
     _pageOptions: RelayPageOptionsInput = {},
-    fields?: ConnectionInputFields
+    fields?: ConnectionInputFields,
+    options?: BaseOptions
   ): Promise<ConnectionResult<E>> {
     // TODO: if the orderby items aren't included in `fields`, should we automatically include?
 
@@ -159,7 +161,8 @@ export class BaseService<E extends BaseModel> {
       whereCombined,
       this.relayService.effectiveOrderStrings(sorts, relayPageOptions),
       { limit: limit + 1 }, // We ask for 1 too many so that we know if there is an additional page
-      requestedFields.selectFields
+      requestedFields.selectFields,
+      options
     );
 
     let totalCountOption = {};
@@ -190,10 +193,12 @@ export class BaseService<E extends BaseModel> {
     where: WhereExpression = {},
     orderBy?: string | string[],
     pageOptions?: LimitOffset,
-    fields?: string[]
+    fields?: string[],
+    options?: BaseOptions
   ): SelectQueryBuilder<E> {
     const DEFAULT_LIMIT = 50;
-    let qb = this.manager.createQueryBuilder<E>(this.entityClass, this.klass);
+    const manager = options?.manager ?? this.manager;
+    let qb = manager.createQueryBuilder<E>(this.entityClass, this.klass);
     if (!pageOptions) {
       pageOptions = {
         limit: DEFAULT_LIMIT
@@ -344,9 +349,10 @@ export class BaseService<E extends BaseModel> {
   }
 
   async findOne<W>(
-    where: W // V3: WhereExpression
+    where: W, // V3: WhereExpression
+    options?: BaseOptions
   ): Promise<E> {
-    const items = await this.find(where);
+    const items = await this.find(where, undefined, undefined, undefined, undefined, options);
     if (!items.length) {
       throw new Error(`Unable to find ${this.entityClass.name} where ${JSON.stringify(where)}`);
     } else if (items.length > 1) {
