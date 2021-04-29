@@ -103,6 +103,19 @@ export class BaseService<E extends BaseModel> {
     this.klass = this.repository.metadata.name.toLowerCase();
   }
 
+  getQueryBuilder<W extends WhereInput>(
+    where?: any, // V3: WhereExpression = {},
+    orderBy?: string,
+    limit?: number,
+    offset?: number,
+    fields?: string[],
+    options?: BaseOptions
+  ): SelectQueryBuilder<E> {
+    // TODO: FEATURE - make the default limit configurable
+    limit = limit ?? 20;
+    return this.buildFindQuery<W>(where, orderBy, { limit, offset }, fields, options);
+  }
+
   async find<W extends WhereInput>(
     where?: any, // V3: WhereExpression = {},
     orderBy?: string,
