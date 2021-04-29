@@ -540,6 +540,11 @@ export function entityToWhereInput(model: ModelMetadata): string {
     @TypeGraphQLInputType()
     export class ${classDeclaration} {
       ${fieldTemplates}
+      @TypeGraphQLField(() => ${model.name}WhereInput, { nullable: true })
+      AND?: [${model.name}WhereInput];
+
+      @TypeGraphQLField(() => ${model.name}WhereInput, { nullable: true })
+      OR?: [${model.name}WhereInput];
     }
   `;
 }
