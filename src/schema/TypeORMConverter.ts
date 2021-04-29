@@ -557,7 +557,7 @@ export function entityToWhereArgs(model: ModelMetadata): string {
       where?: ${model.name}WhereInput;
 
       @TypeGraphQLField(() => ${model.name}OrderByEnum, { nullable: true })
-      orderBy?: ${model.name}OrderByEnum;
+      orderBy?: ${model.name}OrderByEnum[];
     }
   `;
 }
