@@ -4,6 +4,7 @@ import { Field } from 'type-graphql';
 import { JoinColumn, ManyToOne as TypeORMManyToOne } from 'typeorm';
 
 import { IdField } from '../decorators';
+import { getMetadataStorage } from '../metadata';
 import { composeMethodDecorators, MethodDecoratorFactory } from '../utils';
 
 export function ManyToOne(parentType: any, joinFunc: any, options: any = {}): any {
@@ -39,6 +40,7 @@ export function ManyToOne(parentType: any, joinFunc: any, options: any = {}): an
     JoinColumn() as MethodDecoratorFactory,
     createForeignKeyField
   ];
+  getMetadataStorage().addModelRelation({ ...options, isList: false });
 
   return composeMethodDecorators(...factories);
 }

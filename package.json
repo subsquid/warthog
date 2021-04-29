@@ -1,6 +1,6 @@
 {
-  "name": "warthog",
-  "version": "2.23.0",
+  "name": "@metmirr/warthog",
+  "version": "2.26.0",
   "description": "Opinionated set of tools for setting up GraphQL backed by TypeORM",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -19,6 +19,7 @@
   },
   "scripts": {
     "build": "rm -rf ./dist && yarn tsc && copyfiles -u 1 src/cli/**/*.ejs dist/",
+    "b": "sh +x build.sh",
     "bootstrap": "./tools/bootstrap-all.sh",
     "check:code": "tsc --noEmit && yarn lint && yarn prettify",
     "circle:build": "rm ./tmp/circle.build.yml 2> /dev/null && circleci config process .circleci/config.yml > ./tmp/circle.build.yml && circleci local execute -c ./tmp/circle.build.yml --job build",
@@ -81,6 +82,7 @@
     "apollo-server": "^2.9.9",
     "apollo-server-express": "^2.9.9",
     "app-root-path": "^3.0.0",
+    "bn.js": "^5.2.0",
     "caller": "^1.0.1",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.11.0",
