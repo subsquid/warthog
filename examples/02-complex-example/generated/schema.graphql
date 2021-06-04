@@ -71,6 +71,26 @@ interface DeleteResponse {
   id: ID!
 }
 
+type EventObject {
+  params: [EventParam!]!
+}
+
+input EventObjectInput {
+  params: [EventParamInput!]!
+}
+
+type EventParam {
+  type: String!
+  name: String!
+  value: JSONObject!
+}
+
+input EventParamInput {
+  type: String!
+  name: String!
+  value: JSONObject!
+}
+
 """
 The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -83,11 +103,10 @@ type Mutation {
 }
 
 type PageInfo {
-  limit: Float!
-  offset: Float!
-  totalCount: Float!
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
 }
 
 type Query {
@@ -127,6 +146,7 @@ type User implements BaseGraphQLObject {
   bigIntField: Int
   jsonField: JSONObject
   jsonFieldNoFilter: JSONObject
+  typedJsonField: EventObject
 
   """This is a string field"""
   stringField: String
@@ -172,6 +192,7 @@ input UserCreateInput {
   bigIntField: Float
   jsonField: JSONObject
   jsonFieldNoFilter: JSONObject
+  typedJsonField: EventObjectInput
   stringField: String
   noFilterField: String
   noSortField: String
@@ -287,6 +308,7 @@ input UserUpdateInput {
   bigIntField: Float
   jsonField: JSONObject
   jsonFieldNoFilter: JSONObject
+  typedJsonField: EventObjectInput
   stringField: String
   noFilterField: String
   noSortField: String
@@ -449,6 +471,7 @@ input UserWhereInput {
   varcharField_startsWith: String
   varcharField_endsWith: String
   varcharField_in: [String!]
+  geometryField_json: JSONObject
   intField_eq: Int
   intField_gt: Int
   intField_gte: Int

@@ -6,13 +6,10 @@ import { IResolvers } from 'graphql-tools/dist/Interfaces'
 import * as schema from  './schema.graphql'
 
 export interface Query {
-    users: <T = Array<User>>(args: { offset?: Int | null, limit?: Int | null, where?: UserWhereInput | null, orderBy?: UserOrderByInput | null }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> 
+    UserConnection: <T = UserConnection>(args: { offset?: Int | null, limit?: Int | null, where?: UserWhereInput | null, orderBy?: UserOrderByInput | null }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> 
   }
 
-export interface Mutation {
-    successfulTransaction: <T = Array<User>>(args: { data: UserCreateInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
-    failedTransaction: <T = Array<User>>(args: { data: UserCreateInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> 
-  }
+export interface Mutation {}
 
 export interface Subscription {}
 
@@ -164,10 +161,11 @@ export interface BaseModelUUID extends BaseGraphQLObject {
 }
 
 export interface PageInfo {
+  limit: Float
+  offset: Float
+  totalCount: Float
   hasNextPage: Boolean
   hasPreviousPage: Boolean
-  startCursor?: String | null
-  endCursor?: String | null
 }
 
 export interface StandardDeleteResponse {
@@ -185,6 +183,11 @@ export interface User extends BaseGraphQLObject {
   version: Int
   firstName: String
   lastName: String
+}
+
+export interface UserConnection {
+  nodes: Array<User>
+  pageInfo: PageInfo
 }
 
 /*

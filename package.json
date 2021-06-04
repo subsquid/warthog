@@ -19,7 +19,6 @@
   },
   "scripts": {
     "build": "rm -rf ./dist && yarn tsc && copyfiles -u 1 src/cli/**/*.ejs dist/",
-    "b": "sh +x build.sh",
     "bootstrap": "./tools/bootstrap-all.sh",
     "check:code": "tsc --noEmit && yarn lint && yarn prettify",
     "circle:build": "rm ./tmp/circle.build.yml 2> /dev/null && circleci config process .circleci/config.yml > ./tmp/circle.build.yml && circleci local execute -c ./tmp/circle.build.yml --job build",
@@ -30,8 +29,7 @@
     "semantic-release": "semantic-release",
     "test": "./tools/test.sh",
     "test:prod": "NODE_ENV=production ./tools/test.sh",
-    "test:watch": "./tools/test.sh --watch",
-    "packk": "yarn build && yarn pack"
+    "test:watch": "./tools/test.sh --watch"
   },
   "husky": {
     "hooks": {
