@@ -25,6 +25,7 @@ import { Config } from './config';
 import { BaseContext } from './Context';
 
 import * as Debug from 'debug';
+import * as path from 'path';
 
 const debug = Debug('warthog:server');
 
@@ -226,7 +227,11 @@ export class Server<C extends BaseContext> {
 
     debug('start:ApolloServerAllocation:start');
     // See all options here: https://github.com/apollographql/apollo-server/blob/9ffb4a847e1503ea2ab1f3fcd47837daacf40870/packages/apollo-server-core/src/types.ts#L69
-    const playgroundOption = this.config.get('PLAYGROUND') === 'true' ? { playground: true } : {};
+    const playgroundAssetsUrl = '/@apollographql/graphql-playground-react/build';
+    const playgroundOption =
+      this.config.get('PLAYGROUND') === 'true'
+        ? { playground: { version: '', cdnUrl: '' } } // this makes playground files to be served locally
+        : {};
     const introspectionOption =
       this.config.get('INTROSPECTION') === 'true' ? { introspection: true } : {};
 
@@ -254,6 +259,12 @@ export class Server<C extends BaseContext> {
     debug('start:ApolloServerAllocation:end');
 
     this.expressApp.use('/health', healthCheckMiddleware);
+
+    // serve static files for GraphQL Playground
+    const pathToPlaygroundAssets =
+      path.dirname(require.resolve('@apollographql/graphql-playground-react/package.json')) +
+      '/build';
+    this.expressApp.use(playgroundAssetsUrl, express.static(pathToPlaygroundAssets));
 
     if (this.appOptions.onBeforeGraphQLMiddleware) {
       this.appOptions.onBeforeGraphQLMiddleware(this.expressApp);
