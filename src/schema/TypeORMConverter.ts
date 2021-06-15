@@ -1,14 +1,12 @@
 import { Container } from 'typedi';
 import { getMetadataArgsStorage } from 'typeorm';
-
 import { ColumnMetadata, getMetadataStorage, ModelMetadata } from '../metadata';
-
+import { WhereOperator } from '../torm';
 import {
-  columnToGraphQLType,
   columnToGraphQLDataType,
+  columnToGraphQLType,
   columnToTypeScriptType
 } from './type-conversion';
-import { WhereOperator } from '../torm';
 
 const ignoreBaseModels = ['BaseModel', 'BaseModelUUID'];
 
@@ -462,7 +460,7 @@ export function entityToWhereInput(model: ModelMetadata): string {
       }
     } else if (column.type === 'json') {
       fieldTemplates += `
-        @TypeGraphQLField(() => ${graphQLDataType}, { nullable: true })
+        @TypeGraphQLField(() => GraphQLJSONObject, { nullable: true })
         ${column.propertyName}_json?: JsonObject;
       `;
     } else if (column.type === 'bytea') {
