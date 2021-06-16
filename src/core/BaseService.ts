@@ -16,7 +16,7 @@ import { addQueryBuilderWhereItem } from '../torm';
 
 import { BaseModel } from './';
 import { StringMap, WhereInput } from './types';
-import { isArray } from 'util';
+
 import {
   RelayFirstAfter,
   RelayLastBefore,
@@ -103,9 +103,22 @@ export class BaseService<E extends BaseModel> {
     this.klass = this.repository.metadata.name.toLowerCase();
   }
 
+  getQueryBuilder<W extends WhereInput>(
+    where?: any, // V3: WhereExpression = {},
+    orderBy?: string | string[],
+    limit?: number,
+    offset?: number,
+    fields?: string[],
+    options?: BaseOptions
+  ): SelectQueryBuilder<E> {
+    // TODO: FEATURE - make the default limit configurable
+    limit = limit ?? 20;
+    return this.buildFindQuery<W>(where, orderBy, { limit, offset }, fields, options);
+  }
+
   async find<W extends WhereInput>(
     where?: any, // V3: WhereExpression = {},
-    orderBy?: string,
+    orderBy?: string | string[],
     limit?: number,
     offset?: number,
     fields?: string[],
@@ -199,6 +212,7 @@ export class BaseService<E extends BaseModel> {
     const DEFAULT_LIMIT = 50;
     const manager = options?.manager ?? this.manager;
     let qb = manager.createQueryBuilder<E>(this.entityClass, this.klass);
+
     if (!pageOptions) {
       pageOptions = {
         limit: DEFAULT_LIMIT
@@ -223,7 +237,7 @@ export class BaseService<E extends BaseModel> {
     }
 
     if (orderBy) {
-      if (!isArray(orderBy)) {
+      if (!Array.isArray(orderBy)) {
         orderBy = [orderBy];
       }
 

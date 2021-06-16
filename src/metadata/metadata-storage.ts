@@ -46,6 +46,12 @@ export interface ColumnMetadata extends DecoratorCommonOptions {
 
 export type ColumnOptions = Partial<ColumnMetadata>;
 
+export interface RelationMetadata {
+  relModelName: string;
+  propertyName: string;
+  isList: boolean;
+}
+
 export interface ModelMetadata {
   abstract?: boolean;
   filename?: string; // optional because Class decorators added after field decorators
@@ -54,6 +60,7 @@ export interface ModelMetadata {
   columns: ColumnMetadata[];
   apiOnly?: boolean;
   dbOnly?: boolean;
+  relations: RelationMetadata[];
 }
 
 @Service('MetadataStorage')
@@ -203,6 +210,32 @@ export class MetadataStorage {
     this.addField('enum', modelName, columnName, options);
   }
 
+  getModelRelation(modelName: string) {
+    return this.models[modelName].relations;
+  }
+
+  addModelRelation(options: any) {
+    const { modelName, relModelName, propertyName, isList } = options;
+    if (!modelName || !relModelName || !propertyName || isList === undefined) {
+      throw Error(
+        `Missing decorator options for ${modelName}. Make sure you provide all the required props(modelName, relModelName, propertyName, isList)`
+      );
+    }
+    if (!this.models[modelName]) {
+      this.models[modelName] = {
+        name: modelName,
+        columns: Array.from(this.baseColumns),
+        relations: []
+      };
+    }
+
+    this.models[modelName].relations.push({
+      relModelName,
+      propertyName,
+      isList
+    });
+  }
+
   getModels() {
     return this.models;
   }
@@ -231,7 +264,8 @@ export class MetadataStorage {
     if (!this.models[modelName]) {
       this.models[modelName] = {
         name: modelName,
-        columns: Array.from(this.baseColumns)
+        columns: Array.from(this.baseColumns),
+        relations: []
       };
     }
 

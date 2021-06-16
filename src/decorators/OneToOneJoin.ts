@@ -2,6 +2,7 @@ import { Field } from 'type-graphql';
 import { OneToOne as TypeORMOneToOne, JoinColumn } from 'typeorm';
 
 import { IdField } from '.';
+import { getMetadataStorage } from '../metadata';
 import { composeMethodDecorators, MethodDecoratorFactory } from '../utils';
 
 // To be used in model.ejs
@@ -39,6 +40,7 @@ export function OneToOneJoin(parentType: any, joinFunc: any, options: any = {}):
     JoinColumn() as MethodDecoratorFactory,
     createForeignKeyField
   ];
+  getMetadataStorage().addModelRelation({ ...options, isList: false });
 
   return composeMethodDecorators(...factories);
 }

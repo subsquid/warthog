@@ -1,6 +1,6 @@
 {
   "name": "warthog",
-  "version": "2.23.0",
+  "version": "2.30.0",
   "description": "Opinionated set of tools for setting up GraphQL backed by TypeORM",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -19,6 +19,7 @@
   },
   "scripts": {
     "build": "rm -rf ./dist && yarn tsc && copyfiles -u 1 src/cli/**/*.ejs dist/",
+    "b": "sh +x build.sh",
     "bootstrap": "./tools/bootstrap-all.sh",
     "check:code": "tsc --noEmit && yarn lint && yarn prettify",
     "circle:build": "rm ./tmp/circle.build.yml 2> /dev/null && circleci config process .circleci/config.yml > ./tmp/circle.build.yml && circleci local execute -c ./tmp/circle.build.yml --job build",
@@ -53,7 +54,7 @@
   },
   "homepage": "https://github.com/goldcaddy77/warthog#readme",
   "//": "TODO: figure out which of these are dependencies, devDeps or peerDeps",
-  "hydra": "https://github.com/metmirr/warthog/releases/download/v2.23.0/warthog-v2.23.0.tgz",
+  "hydra": "https://github.com/metmirr/warthog/releases/download/v2.30.0/warthog-v2.30.0.tgz",
   "dependencies": {
     "@types/app-root-path": "^1.2.4",
     "@types/bn.js": "^4.11.6",
@@ -82,6 +83,7 @@
     "apollo-server": "^2.9.9",
     "apollo-server-express": "^2.9.9",
     "app-root-path": "^3.0.0",
+    "bn.js": "^5.2.0",
     "caller": "^1.0.1",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.11.0",
@@ -104,7 +106,7 @@
     "mkdirp": "^0.5.1",
     "node-emoji": "^1.10.0",
     "open": "^7.0.0",
-    "pg": "^7.12.1",
+    "pg": "8.0.3",
     "pgtools": "^0.3.0",
     "prettier": "^1.19.1",
     "reflect-metadata": "^0.1.13",

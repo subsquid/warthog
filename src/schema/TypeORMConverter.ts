@@ -514,10 +514,37 @@ export function entityToWhereInput(model: ModelMetadata): string {
       ? `${model.name}WhereInput extends ${superName}WhereInput`
       : `${model.name}WhereInput`;
 
+  /////// cross filters ///////
+  const modelRelations = getMetadataStorage().getModelRelation(model.name);
+  modelRelations.forEach(m => {
+    if (m.isList) {
+      fieldTemplates += `
+    @TypeGraphQLField(() => ${m.relModelName}WhereInput, { nullable: true })
+    ${m.propertyName}_none?: ${m.relModelName}WhereInput
+
+    @TypeGraphQLField(() => ${m.relModelName}WhereInput, { nullable: true })
+    ${m.propertyName}_some?: ${m.relModelName}WhereInput
+
+    @TypeGraphQLField(() => ${m.relModelName}WhereInput, { nullable: true })
+    ${m.propertyName}_every?: ${m.relModelName}WhereInput
+    `;
+    } else {
+      fieldTemplates += `
+    @TypeGraphQLField(() => ${m.relModelName}WhereInput, { nullable: true })
+    ${m.propertyName}?: ${m.relModelName}WhereInput
+    `;
+    }
+  });
+
   return `
     @TypeGraphQLInputType()
     export class ${classDeclaration} {
       ${fieldTemplates}
+      @TypeGraphQLField(() => ${model.name}WhereInput, { nullable: true })
+      AND?: [${model.name}WhereInput];
+
+      @TypeGraphQLField(() => ${model.name}WhereInput, { nullable: true })
+      OR?: [${model.name}WhereInput];
     }
   `;
 }
@@ -530,7 +557,7 @@ export function entityToWhereArgs(model: ModelMetadata): string {
       where?: ${model.name}WhereInput;
 
       @TypeGraphQLField(() => ${model.name}OrderByEnum, { nullable: true })
-      orderBy?: ${model.name}OrderByEnum;
+      orderBy?: ${model.name}OrderByEnum[];
     }
   `;
 }

@@ -1,6 +1,7 @@
 import { Field } from 'type-graphql';
 import { JoinTable, ManyToMany as TypeORMManyToMany } from 'typeorm';
 
+import { getMetadataStorage } from '../metadata';
 import { composeMethodDecorators, MethodDecoratorFactory } from '../utils';
 
 // Note: for many to many relationships, you need to set one item as the "JoinTable"
@@ -12,6 +13,8 @@ export function ManyToManyJoin(parentType: any, joinFunc: any, options: any = {}
     Field(() => [parentType()], { ...options }) as MethodDecoratorFactory,
     TypeORMManyToMany(parentType, joinFunc, options) as MethodDecoratorFactory
   ];
+
+  getMetadataStorage().addModelRelation({ ...options, isList: true });
 
   return composeMethodDecorators(...factories);
 }
