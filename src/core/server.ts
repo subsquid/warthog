@@ -13,6 +13,7 @@ const open = require('open'); // eslint-disable-line @typescript-eslint/no-var-r
 import { AuthChecker, buildSchema } from 'type-graphql'; // formatArgumentValidationError
 import { Container } from 'typedi';
 import { Connection, ConnectionOptions, useContainer as TypeORMUseContainer } from 'typeorm';
+import { IQueryTemplate } from '@apollographql/graphql-playground-react';
 
 import { logger, Logger } from '../core/logger';
 import { getRemoteBinding } from '../gql';
@@ -46,6 +47,7 @@ export interface ServerOptions<T> {
   warthogImportPath?: string;
   introspection?: boolean; // DEPRECATED
   bodyParserConfig?: OptionsJson;
+  queryTemplates?: IQueryTemplate[];
   onBeforeGraphQLMiddleware?: (app: express.Application) => void;
   onAfterGraphQLMiddleware?: (app: express.Application) => void;
 }
@@ -230,7 +232,16 @@ export class Server<C extends BaseContext> {
     const playgroundAssetsUrl = '/@apollographql/graphql-playground-react/build';
     const playgroundOption =
       this.config.get('PLAYGROUND') === 'true'
-        ? { playground: { version: '', cdnUrl: '' } } // this makes playground files to be served locally
+        ? {
+            playground: {
+              // this makes playground files to be served locally
+              version: '',
+              cdnUrl: '',
+
+              // pass custom query templates to playground
+              queryTemplates: this.appOptions.queryTemplates || []
+            }
+          }
         : {};
     const introspectionOption =
       this.config.get('INTROSPECTION') === 'true' ? { introspection: true } : {};
