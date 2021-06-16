@@ -1,9 +1,7 @@
 import * as Faker from 'faker';
-
 import { getBindingError, logger } from '../../../src';
-
-import { getServer } from '../src/server';
 import { Binding } from '../generated/binding';
+import { getServer } from '../src/server';
 
 const NUM_USERS = 10;
 
@@ -65,6 +63,16 @@ async function seedDatabase() {
             emailField,
             stringField,
             jsonField,
+            typedJsonField: {
+              params: {
+                name: Faker.random.arrayElement(['Foo', 'Faa', 'Fee']),
+                type: Faker.random.arrayElement(['Bar', 'Baz']),
+                value: {
+                  one: 1,
+                  two: 'TWO'
+                }
+              }
+            },
             dateField,
             dateOnlyField,
             dateTimeField,

@@ -9,22 +9,20 @@ import {
   SelectQueryBuilder
 } from 'typeorm';
 import { ColumnMetadata } from 'typeorm/metadata/ColumnMetadata';
-
+import { isArray } from 'util';
 import { debug } from '../decorators';
 import { StandardDeleteResponse } from '../tgql';
 import { addQueryBuilderWhereItem } from '../torm';
-
 import { BaseModel } from './';
 import { StringMap, WhereInput } from './types';
-
+import { ConnectionInputFields, GraphQLInfoService } from './GraphQLInfoService';
 import {
+  ConnectionResult,
   RelayFirstAfter,
   RelayLastBefore,
-  RelayService,
   RelayPageOptions,
-  ConnectionResult
+  RelayService
 } from './RelayService';
-import { GraphQLInfoService, ConnectionInputFields } from './GraphQLInfoService';
 
 export interface BaseOptions {
   manager?: EntityManager; // Allows consumers to pass in a TransactionManager
@@ -232,7 +230,10 @@ export class BaseService<E extends BaseModel> {
       }
       // Querybuilder requires you to prefix all fields with the table alias.  It also requires you to
       // specify the field name using it's TypeORM attribute name, not the camel-cased DB column name
-      const selection = fields.map(field => `${this.klass}.${field}`);
+      const selection = fields
+        .filter(field => this.columnMap[field]) // This will filter out any association records that come in @Fields
+        .map(field => `${this.klass}.${field}`);
+
       qb = qb.select(selection);
     }
 
@@ -380,7 +381,7 @@ export class BaseService<E extends BaseModel> {
 
   async create(data: DeepPartial<E>, userId: string, options?: BaseOptions): Promise<E> {
     const manager = options?.manager ?? this.manager;
-    const entity = manager.create(this.entityClass, { ...data, createdById: userId });
+    const entity = manager.create<E>(this.entityClass, { ...data, createdById: userId });
 
     // Validate against the the data model
     // Without `skipMissingProperties`, some of the class-validator validations (like MinLength)
@@ -446,7 +447,7 @@ export class BaseService<E extends BaseModel> {
     return manager.findOneOrFail(this.entityClass, result.id);
   }
 
-  async delete<W extends any>(
+  async delete<W extends object>(
     where: W,
     userId: string,
     options?: BaseOptions
@@ -458,7 +459,12 @@ export class BaseService<E extends BaseModel> {
       deletedById: userId
     };
 
-    const found = await manager.findOneOrFail<E>(this.entityClass, where as any);
+    const whereNotDeleted = {
+      ...where,
+      deletedAt: null
+    };
+
+    const found = await manager.findOneOrFail<E>(this.entityClass, whereNotDeleted as any);
     const idData = ({ id: found.id } as any) as DeepPartial<E>;
     const entity = manager.merge<E>(this.entityClass, new this.entityClass(), data as any, idData);
 

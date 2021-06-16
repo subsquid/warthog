@@ -26,6 +26,10 @@ import { StringEnum } from "../modules/kitchen-sink/kitchen-sink.model";
 // @ts-ignore
 import { ApiOnly } from "../modules/api-only/api-only.model";
 // @ts-ignore
+import { EventParam } from "../modules/kitchen-sink/kitchen-sink.model";
+// @ts-ignore
+import { EventObject } from "../modules/kitchen-sink/kitchen-sink.model";
+// @ts-ignore
 import { KitchenSink } from "../modules/kitchen-sink/kitchen-sink.model";
 // @ts-ignore
 import { Dish } from "../modules/dish/dish.model";
@@ -452,6 +456,9 @@ export class KitchenSinkWhereInput {
   @TypeGraphQLField(() => GraphQLJSONObject, { nullable: true })
   jsonField_json?: JsonObject;
 
+  @TypeGraphQLField(() => GraphQLJSONObject, { nullable: true })
+  typedJsonField_json?: JsonObject;
+
   @TypeGraphQLField(() => ID, { nullable: true })
   idField_eq?: string;
 
@@ -626,6 +633,9 @@ export class KitchenSinkCreateInput {
   @TypeGraphQLField(() => GraphQLJSONObject, { nullable: true })
   jsonField?: JsonObject;
 
+  @TypeGraphQLField(() => EventObject, { nullable: true })
+  typedJsonField?: EventObject;
+
   @TypeGraphQLField(() => ID, { nullable: true })
   idField?: string;
 
@@ -706,6 +716,9 @@ export class KitchenSinkUpdateInput {
 
   @TypeGraphQLField(() => GraphQLJSONObject, { nullable: true })
   jsonField?: JsonObject;
+
+  @TypeGraphQLField(() => EventObject, { nullable: true })
+  typedJsonField?: EventObject;
 
   @TypeGraphQLField(() => ID, { nullable: true })
   idField?: string;

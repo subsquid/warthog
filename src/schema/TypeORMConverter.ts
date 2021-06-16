@@ -1,14 +1,12 @@
 import { Container } from 'typedi';
 import { getMetadataArgsStorage } from 'typeorm';
-
 import { ColumnMetadata, getMetadataStorage, ModelMetadata } from '../metadata';
-
-import {
-  columnToGraphQLType,
-  columnTypeToGraphQLDataType,
-  columnInfoToTypeScriptType
-} from './type-conversion';
 import { WhereOperator } from '../torm';
+import {
+  columnToGraphQLDataType,
+  columnToGraphQLType,
+  columnToTypeScriptType
+} from './type-conversion';
 
 const ignoreBaseModels = ['BaseModel', 'BaseModelUUID'];
 
@@ -34,14 +32,6 @@ export function getColumnsForModel(model: ModelMetadata) {
 
 export function filenameToImportPath(filename: string): string {
   return filename.replace(/\.(j|t)s$/, '').replace(/\\/g, '/');
-}
-
-export function columnToGraphQLDataType(column: ColumnMetadata): string {
-  return columnTypeToGraphQLDataType(column.type, column.enumName);
-}
-
-export function columnToTypeScriptType(column: ColumnMetadata): string {
-  return columnInfoToTypeScriptType(column.type, column.enumName);
 }
 
 export function generateEnumMapImports(): string[] {
@@ -170,8 +160,6 @@ export function entityToCreateInput(model: ModelMetadata): string {
     const tsRequired = column.nullable ? '?' : '!';
     let tsType = columnToTypeScriptType(column);
 
-    // if (column.isArray) {
-
     if (column.array) {
       tsType = tsType.concat('[]');
       graphQLDataType = `[${graphQLDataType}]`;
@@ -219,8 +207,6 @@ export function entityToUpdateInput(model: ModelMetadata): string {
     let graphQLDataType = columnToGraphQLDataType(column);
     let tsType = columnToTypeScriptType(column);
 
-    // if (column.isArray) {
-
     if (column.array) {
       tsType = tsType.concat('[]');
       graphQLDataType = `[${graphQLDataType}]`;
@@ -266,7 +252,7 @@ export function entityToUpdateInputArgs(model: ModelMetadata): string {
 }
 
 function columnToTypes(column: ColumnMetadata) {
-  const graphqlType = columnToGraphQLType(column.type, column.enumName);
+  const graphqlType = columnToGraphQLType(column);
   const tsType = columnToTypeScriptType(column);
 
   return { graphqlType, tsType };
@@ -613,8 +599,6 @@ function columnRequiresExplicitGQLType(column: ColumnMetadata) {
     column.type === 'id' ||
     column.type === 'date' ||
     column.type === 'datetime' ||
-    column.type === 'dateonly' ||
-    column.type === 'numeric' ||
-    column.type === 'bytea'
+    column.type === 'dateonly'
   );
 }

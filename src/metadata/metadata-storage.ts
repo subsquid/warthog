@@ -37,10 +37,10 @@ export interface ColumnMetadata extends DecoratorCommonOptions {
   propertyName: string;
   dataType?: ColumnType; // int16, jsonb, etc...
   default?: any;
+  gqlFieldType?: Function;
   enum?: GraphQLEnumType;
   enumName?: string;
   unique?: boolean;
-  // isArray?: boolean;
   array?: boolean;
 }
 
@@ -167,6 +167,17 @@ export class MetadataStorage {
         unique: false
       }
     ];
+  }
+
+  // Adds a class so that we can import it into classes.ts
+  // This is typically used when adding a strongly typed JSON column
+  // using JSONField with a gqlFieldType
+  addClass(name: string, klass: any, filename: string) {
+    this.classMap[name] = {
+      filename,
+      klass,
+      name
+    };
   }
 
   addModel(name: string, klass: any, filename: string, options: Partial<ModelMetadata> = {}) {

@@ -138,6 +138,64 @@ export interface BaseWhereInput {
   deletedById_eq?: String | null
 }
 
+export interface EventObjectInput {
+  params: EventParamInput
+}
+
+export interface EventParamInput {
+  type: String
+  name: String
+  value: JSONObject
+}
+
+export interface PostCreateInput {
+  title: String
+  userId: ID_Output
+}
+
+export interface PostUpdateInput {
+  title?: String | null
+  userId?: ID_Input | null
+}
+
+export interface PostWhereInput {
+  id_eq?: ID_Input | null
+  id_in?: ID_Output[] | ID_Output | null
+  createdAt_eq?: DateTime | null
+  createdAt_lt?: DateTime | null
+  createdAt_lte?: DateTime | null
+  createdAt_gt?: DateTime | null
+  createdAt_gte?: DateTime | null
+  createdById_eq?: ID_Input | null
+  createdById_in?: ID_Output[] | ID_Output | null
+  updatedAt_eq?: DateTime | null
+  updatedAt_lt?: DateTime | null
+  updatedAt_lte?: DateTime | null
+  updatedAt_gt?: DateTime | null
+  updatedAt_gte?: DateTime | null
+  updatedById_eq?: ID_Input | null
+  updatedById_in?: ID_Output[] | ID_Output | null
+  deletedAt_all?: Boolean | null
+  deletedAt_eq?: DateTime | null
+  deletedAt_lt?: DateTime | null
+  deletedAt_lte?: DateTime | null
+  deletedAt_gt?: DateTime | null
+  deletedAt_gte?: DateTime | null
+  deletedById_eq?: ID_Input | null
+  deletedById_in?: ID_Output[] | ID_Output | null
+  title_eq?: String | null
+  title_contains?: String | null
+  title_startsWith?: String | null
+  title_endsWith?: String | null
+  title_in?: String[] | String | null
+  userId_eq?: ID_Input | null
+  userId_in?: ID_Output[] | ID_Output | null
+}
+
+export interface PostWhereUniqueInput {
+  id: ID_Output
+}
+
 export interface UserCreateInput {
   booleanField?: Boolean | null
   dateField?: DateTime | null
@@ -153,6 +211,7 @@ export interface UserCreateInput {
   bigIntField?: Float | null
   jsonField?: JSONObject | null
   jsonFieldNoFilter?: JSONObject | null
+  typedJsonField?: EventObjectInput | null
   stringField?: String | null
   noFilterField?: String | null
   noSortField?: String | null
@@ -197,6 +256,7 @@ export interface UserUpdateInput {
   bigIntField?: Float | null
   jsonField?: JSONObject | null
   jsonFieldNoFilter?: JSONObject | null
+  typedJsonField?: EventObjectInput | null
   stringField?: String | null
   noFilterField?: String | null
   noSortField?: String | null
@@ -308,6 +368,7 @@ export interface UserWhereInput {
   bigIntField_lte?: Int | null
   bigIntField_in?: Int[] | Int | null
   jsonField_json?: JSONObject | null
+  typedJsonField_json?: JSONObject | null
   stringField_eq?: String | null
   stringField_contains?: String | null
   stringField_startsWith?: String | null
@@ -359,6 +420,7 @@ export interface UserWhereInput {
   varcharField_startsWith?: String | null
   varcharField_endsWith?: String | null
   varcharField_in?: String[] | String | null
+  geometryField_json?: JSONObject | null
   intField_eq?: Int | null
   intField_gt?: Int | null
   intField_gte?: Int | null
@@ -469,12 +531,35 @@ export interface BaseModelUUID extends BaseGraphQLObject {
   version: Int
 }
 
+export interface EventObject {
+  params: EventParam
+}
+
+export interface EventParam {
+  type: String
+  name: String
+  value: JSONObject
+}
+
 export interface PageInfo {
-  limit: Float
-  offset: Float
-  totalCount: Float
   hasNextPage: Boolean
   hasPreviousPage: Boolean
+  startCursor?: String | null
+  endCursor?: String | null
+}
+
+export interface Post extends BaseGraphQLObject {
+  id: ID_Output
+  createdAt: DateTime
+  createdById: String
+  updatedAt?: DateTime | null
+  updatedById?: String | null
+  deletedAt?: DateTime | null
+  deletedById?: String | null
+  version: Int
+  title: String
+  user: User
+  userId: String
 }
 
 export interface StandardDeleteResponse {
@@ -504,6 +589,7 @@ export interface User extends BaseGraphQLObject {
   bigIntField?: Int | null
   jsonField?: JSONObject | null
   jsonFieldNoFilter?: JSONObject | null
+  typedJsonField?: EventObject | null
   stringField?: String | null
   noFilterField?: String | null
   noSortField?: String | null
@@ -530,6 +616,7 @@ export interface User extends BaseGraphQLObject {
   apiOnlyField?: String | null
   arrayOfStrings?: Array<String> | null
   arrayOfInts?: Array<Int> | null
+  posts?: Array<Post> | null
 }
 
 /*

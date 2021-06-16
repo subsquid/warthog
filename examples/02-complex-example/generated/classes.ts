@@ -24,7 +24,13 @@ import { BaseWhereInput, JsonObject, PaginationArgs, DateOnlyString, DateTimeStr
 import { StringEnum } from "../src/modules/user/user.model";
 
 // @ts-ignore
+import { EventParam } from "../src/modules/user/user.model";
+// @ts-ignore
+import { EventObject } from "../src/modules/user/user.model";
+// @ts-ignore
 import { User } from "../src/modules/user/user.model";
+// @ts-ignore
+import { Post } from "../src/modules/post/post.model";
 
 export enum UserOrderByEnum {
   createdAt_ASC = "createdAt_ASC",
@@ -379,6 +385,9 @@ export class UserWhereInput {
   @TypeGraphQLField(() => GraphQLJSONObject, { nullable: true })
   jsonField_json?: JsonObject;
 
+  @TypeGraphQLField(() => GraphQLJSONObject, { nullable: true })
+  typedJsonField_json?: JsonObject;
+
   @TypeGraphQLField({ nullable: true })
   stringField_eq?: string;
 
@@ -531,6 +540,9 @@ export class UserWhereInput {
 
   @TypeGraphQLField(() => [String], { nullable: true })
   varcharField_in?: string[];
+
+  @TypeGraphQLField(() => GraphQLJSONObject, { nullable: true })
+  geometryField_json?: JsonObject;
 
   @TypeGraphQLField(() => Int, { nullable: true })
   intField_eq?: number;
@@ -784,6 +796,9 @@ export class UserCreateInput {
   @TypeGraphQLField(() => GraphQLJSONObject, { nullable: true })
   jsonFieldNoFilter?: JsonObject;
 
+  @TypeGraphQLField(() => EventObject, { nullable: true })
+  typedJsonField?: EventObject;
+
   @TypeGraphQLField({ nullable: true })
   stringField?: string;
 
@@ -910,6 +925,9 @@ export class UserUpdateInput {
   @TypeGraphQLField(() => GraphQLJSONObject, { nullable: true })
   jsonFieldNoFilter?: JsonObject;
 
+  @TypeGraphQLField(() => EventObject, { nullable: true })
+  typedJsonField?: EventObject;
+
   @TypeGraphQLField({ nullable: true })
   stringField?: string;
 
@@ -1011,4 +1029,166 @@ export class UserCreateManyArgs {
 export class UserUpdateArgs {
   @TypeGraphQLField() data!: UserUpdateInput;
   @TypeGraphQLField() where!: UserWhereUniqueInput;
+}
+
+export enum PostOrderByEnum {
+  createdAt_ASC = "createdAt_ASC",
+  createdAt_DESC = "createdAt_DESC",
+
+  updatedAt_ASC = "updatedAt_ASC",
+  updatedAt_DESC = "updatedAt_DESC",
+
+  deletedAt_ASC = "deletedAt_ASC",
+  deletedAt_DESC = "deletedAt_DESC",
+
+  title_ASC = "title_ASC",
+  title_DESC = "title_DESC",
+
+  userId_ASC = "userId_ASC",
+  userId_DESC = "userId_DESC"
+}
+
+registerEnumType(PostOrderByEnum, {
+  name: "PostOrderByInput"
+});
+
+@TypeGraphQLInputType()
+export class PostWhereInput {
+  @TypeGraphQLField(() => ID, { nullable: true })
+  id_eq?: string;
+
+  @TypeGraphQLField(() => [ID], { nullable: true })
+  id_in?: string[];
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  createdAt_eq?: Date;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  createdAt_lt?: Date;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  createdAt_lte?: Date;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  createdAt_gt?: Date;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  createdAt_gte?: Date;
+
+  @TypeGraphQLField(() => ID, { nullable: true })
+  createdById_eq?: string;
+
+  @TypeGraphQLField(() => [ID], { nullable: true })
+  createdById_in?: string[];
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  updatedAt_eq?: Date;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  updatedAt_lt?: Date;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  updatedAt_lte?: Date;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  updatedAt_gt?: Date;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  updatedAt_gte?: Date;
+
+  @TypeGraphQLField(() => ID, { nullable: true })
+  updatedById_eq?: string;
+
+  @TypeGraphQLField(() => [ID], { nullable: true })
+  updatedById_in?: string[];
+
+  @TypeGraphQLField({ nullable: true })
+  deletedAt_all?: Boolean;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  deletedAt_eq?: Date;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  deletedAt_lt?: Date;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  deletedAt_lte?: Date;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  deletedAt_gt?: Date;
+
+  @TypeGraphQLField(() => DateTime, { nullable: true })
+  deletedAt_gte?: Date;
+
+  @TypeGraphQLField(() => ID, { nullable: true })
+  deletedById_eq?: string;
+
+  @TypeGraphQLField(() => [ID], { nullable: true })
+  deletedById_in?: string[];
+
+  @TypeGraphQLField({ nullable: true })
+  title_eq?: string;
+
+  @TypeGraphQLField({ nullable: true })
+  title_contains?: string;
+
+  @TypeGraphQLField({ nullable: true })
+  title_startsWith?: string;
+
+  @TypeGraphQLField({ nullable: true })
+  title_endsWith?: string;
+
+  @TypeGraphQLField(() => [String], { nullable: true })
+  title_in?: string[];
+
+  @TypeGraphQLField(() => ID, { nullable: true })
+  userId_eq?: string;
+
+  @TypeGraphQLField(() => [ID], { nullable: true })
+  userId_in?: string[];
+}
+
+@TypeGraphQLInputType()
+export class PostWhereUniqueInput {
+  @TypeGraphQLField(() => ID)
+  id?: string;
+}
+
+@TypeGraphQLInputType()
+export class PostCreateInput {
+  @TypeGraphQLField()
+  title!: string;
+
+  @TypeGraphQLField(() => ID)
+  userId!: string;
+}
+
+@TypeGraphQLInputType()
+export class PostUpdateInput {
+  @TypeGraphQLField({ nullable: true })
+  title?: string;
+
+  @TypeGraphQLField(() => ID, { nullable: true })
+  userId?: string;
+}
+
+@ArgsType()
+export class PostWhereArgs extends PaginationArgs {
+  @TypeGraphQLField(() => PostWhereInput, { nullable: true })
+  where?: PostWhereInput;
+
+  @TypeGraphQLField(() => PostOrderByEnum, { nullable: true })
+  orderBy?: PostOrderByEnum;
+}
+
+@ArgsType()
+export class PostCreateManyArgs {
+  @TypeGraphQLField(() => [PostCreateInput])
+  data!: PostCreateInput[];
+}
+
+@ArgsType()
+export class PostUpdateArgs {
+  @TypeGraphQLField() data!: PostUpdateInput;
+  @TypeGraphQLField() where!: PostWhereUniqueInput;
 }

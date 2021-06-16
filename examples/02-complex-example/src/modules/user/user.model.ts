@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { GraphQLJSONObject } = require('graphql-type-json');
+import { Field, InputType } from 'type-graphql';
 import { Column, Unique } from 'typeorm';
 import {
   BaseModel,
@@ -10,21 +13,44 @@ import {
   DateTimeString,
   EmailField,
   EnumField,
+  FloatField,
   IdField,
   IntField,
   JSONField,
   JsonObject,
   Model,
   NumericField,
-  StringField,
-  FloatField
+  ObjectType,
+  OneToMany,
+  StringField
 } from '../../../../../src';
+import { Post } from '../post/post.model';
 
 // Note: this must be exported and in the same file where it's attached with @EnumField
 // Also - must use string enums
 export enum StringEnum {
   FOO = 'FOO',
   BAR = 'BAR'
+}
+
+@InputType('EventParamInput')
+@ObjectType()
+export class EventParam {
+  @Field()
+  type!: string;
+
+  @Field()
+  name?: string;
+
+  @Field(() => GraphQLJSONObject)
+  value!: JsonObject;
+}
+
+@InputType('EventObjectInput')
+@ObjectType()
+export class EventObject {
+  @Field(() => EventParam)
+  params!: EventParam;
 }
 
 @Model()
@@ -81,10 +107,13 @@ export class User extends BaseModel {
   @JSONField({ filter: false, nullable: true })
   jsonFieldNoFilter?: JsonObject;
 
+  @JSONField({ filter: true, nullable: true, gqlFieldType: EventObject })
+  typedJsonField?: EventObject;
+
   @StringField({
     maxLength: 50,
     minLength: 2,
-    nullable: false,
+    nullable: true,
     description: 'This is a string field'
   })
   stringField: string;
@@ -199,6 +228,12 @@ export class User extends BaseModel {
 
   @IntField({ array: true, nullable: true })
   arrayOfInts!: number[];
+
+  @OneToMany(
+    () => Post,
+    (post: Post) => post.user
+  )
+  posts?: Post[];
 
   // TODO: ForeignKeyField
 }
