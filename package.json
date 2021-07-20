@@ -1,6 +1,6 @@
 {
-  "name": "warthog",
-  "version": "2.30.1",
+  "name": "@joystream/warthog",
+  "version": "2.37.0",
   "description": "Opinionated set of tools for setting up GraphQL backed by TypeORM",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -52,7 +52,6 @@
   },
   "homepage": "https://github.com/goldcaddy77/warthog#readme",
   "//": "TODO: figure out which of these are dependencies, devDeps or peerDeps",
-  "hydra": "https://github.com/metmirr/warthog/releases/download/v2.30.0/warthog-v2.30.0.tgz",
   "dependencies": {
     "@types/app-root-path": "^1.2.4",
     "@types/bn.js": "^4.11.6",
@@ -75,7 +74,7 @@
     "@types/prettier": "^1.18.3",
     "@types/shortid": "^0.0.29",
     "@types/ws": "^6.0.3",
-    "@apollographql/graphql-playground-react": "https://github.com/Joystream/graphql-playground/releases/download/query-templates%401.7.27/graphql-playground-react-1.7.27.tgz",
+    "@apollographql/graphql-playground-react": "https://github.com/Joystream/graphql-playground/releases/download/query-templates%401.7.27/graphql-playground-react-v1.7.27.tgz",
     "apollo-link-error": "^1.1.12",
     "apollo-link-http": "^1.5.16",
     "apollo-server": "^2.9.9",

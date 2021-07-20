@@ -283,6 +283,9 @@ export function entityToWhereInput(model: ModelMetadata): string {
     const { tsType } = columnToTypes(column);
 
     const graphQLDataType = columnToGraphQLDataType(column);
+    const modelRelationsNames = getMetadataStorage()
+      .getModelRelation(model.name)
+      .map(rel => rel.propertyName);
 
     // TODO: for foreign key fields, only allow the same filters as ID below
     // Example: photo.userId: String
@@ -297,7 +300,7 @@ export function entityToWhereInput(model: ModelMetadata): string {
         @TypeGraphQLField(() => [${graphQLDataType}],{ nullable: true })
         ${column.propertyName}_containsAny?: [${tsType}];
       `;
-    } else if (column.type === 'id') {
+    } else if (column.type === 'id' && !modelRelationsNames.includes(column.propertyName)) {
       const graphQlType = 'ID';
 
       if (allowFilter('eq')) {
