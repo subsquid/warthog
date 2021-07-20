@@ -14,6 +14,7 @@ const open = require('open'); // eslint-disable-line @typescript-eslint/no-var-r
 import { AuthChecker, buildSchema } from 'type-graphql'; // formatArgumentValidationError
 import { Container } from 'typedi';
 import { Connection, ConnectionOptions, useContainer as TypeORMUseContainer } from 'typeorm';
+import { IQueryTemplate } from '@apollographql/graphql-playground-react';
 
 import { logger, Logger } from '../core/logger';
 import { getRemoteBinding } from '../gql';
@@ -26,6 +27,7 @@ import { Config } from './config';
 import { BaseContext } from './Context';
 
 import * as Debug from 'debug';
+import * as path from 'path';
 
 const debug = Debug('warthog:server');
 
@@ -47,6 +49,7 @@ export interface ServerOptions<T> {
   warthogImportPath?: string;
   introspection?: boolean; // DEPRECATED
   bodyParserConfig?: OptionsJson;
+  queryTemplates?: IQueryTemplate[];
   onBeforeGraphQLMiddleware?: (app: express.Application) => void;
   onAfterGraphQLMiddleware?: (app: express.Application) => void;
 }
@@ -229,7 +232,20 @@ export class Server<C extends BaseContext> {
 
     debug('start:ApolloServerAllocation:start');
     // See all options here: https://github.com/apollographql/apollo-server/blob/9ffb4a847e1503ea2ab1f3fcd47837daacf40870/packages/apollo-server-core/src/types.ts#L69
-    const playgroundOption = this.config.get('PLAYGROUND') === 'true' ? { playground: true } : {};
+    const playgroundAssetsUrl = '/@apollographql/graphql-playground-react/build';
+    const playgroundOption =
+      this.config.get('PLAYGROUND') === 'true'
+        ? {
+            playground: {
+              // this makes playground files to be served locally
+              version: '',
+              cdnUrl: '',
+
+              // pass custom query templates to playground
+              queryTemplates: this.appOptions.queryTemplates || []
+            }
+          }
+        : {};
     const introspectionOption =
       this.config.get('INTROSPECTION') === 'true' ? { introspection: true } : {};
 
@@ -257,6 +273,12 @@ export class Server<C extends BaseContext> {
     debug('start:ApolloServerAllocation:end');
 
     this.expressApp.use('/health', healthCheckMiddleware);
+
+    // serve static files for GraphQL Playground
+    const pathToPlaygroundAssets =
+      path.dirname(require.resolve('@apollographql/graphql-playground-react/package.json')) +
+      '/build';
+    this.expressApp.use(playgroundAssetsUrl, express.static(pathToPlaygroundAssets));
 
     if (this.appOptions.onBeforeGraphQLMiddleware) {
       this.appOptions.onBeforeGraphQLMiddleware(this.expressApp);

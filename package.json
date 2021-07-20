@@ -1,6 +1,6 @@
 {
   "name": "@joystream/warthog",
-  "version": "2.36.0",
+  "version": "2.37.0",
   "description": "Opinionated set of tools for setting up GraphQL backed by TypeORM",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -74,6 +74,7 @@
     "@types/prettier": "^1.18.3",
     "@types/shortid": "^0.0.29",
     "@types/ws": "^6.0.3",
+    "@apollographql/graphql-playground-react": "https://github.com/Joystream/graphql-playground/releases/download/query-templates%401.7.27/graphql-playground-react-v1.7.27.tgz",
     "apollo-link-error": "^1.1.12",
     "apollo-link-http": "^1.5.16",
     "apollo-server": "^2.9.9",
