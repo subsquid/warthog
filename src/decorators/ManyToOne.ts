@@ -26,6 +26,16 @@ export function ManyToOne(parentType: any, joinFunc: any, options: any = {}): an
     klass = target.constructor.name;
     Reflect.defineProperty(target, `${klass}Id`, {});
     IdField(options)(target, `${propertyKey}Id`, descriptor);
+
+    // make sure property named `${propertyKey}Id` is created as well - it is used in Joystream's Sumer release
+    // notice that inside of `IdField()` `propertyName` directive overrides content of 2nd function call parameter
+    // `(target, `${propertyKey}Id` <- this has no effect, descriptor)`
+    // when editing this, reflect changes to `OneToOneJoin.ts` where same patch is applied
+    const newOptions: any = {
+      ...options,
+      propertyName: `${propertyKey}Id`
+    };
+    IdField(newOptions)(target, `${propertyKey}Id`, descriptor);
   };
 
   // NOTE: this is unnecessary, but I'm keeping it around because otherwise it will generate the schema properties in a different order
