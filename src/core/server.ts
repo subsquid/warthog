@@ -49,7 +49,11 @@ export interface ServerOptions<T> {
   warthogImportPath?: string;
   introspection?: boolean; // DEPRECATED
   bodyParserConfig?: OptionsJson;
-  queryTemplates?: IQueryTemplate[];
+  playgroundConfig?: {
+    queryTemplates?: IQueryTemplate[];
+    version?: string;
+    cdnUrl?: string;
+  };
   onBeforeGraphQLMiddleware?: (app: express.Application) => void;
   onAfterGraphQLMiddleware?: (app: express.Application) => void;
 }
@@ -238,11 +242,11 @@ export class Server<C extends BaseContext> {
         ? {
             playground: {
               // this makes playground files to be served locally
-              version: '',
-              cdnUrl: '',
+              version: this.appOptions.playgroundConfig?.version || '',
+              cdnUrl: this.appOptions.playgroundConfig?.cdnUrl || '',
 
               // pass custom query templates to playground
-              queryTemplates: this.appOptions.queryTemplates || []
+              queryTemplates: this.appOptions.playgroundConfig?.queryTemplates || []
             }
           }
         : {};
