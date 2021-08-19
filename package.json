@@ -1,5 +1,5 @@
 {
-  "name": "@joystream/warthog",
+  "name": "@subsquid/warthog",
   "version": "2.39.0",
   "description": "Opinionated set of tools for setting up GraphQL backed by TypeORM",
   "main": "dist/index.js",
