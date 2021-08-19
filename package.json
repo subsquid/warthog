@@ -13,6 +13,9 @@
     "LICENSE",
     "README.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "author": {
     "name": "Dan Caddigan",
     "url": "https://github.com/goldcaddy77"
