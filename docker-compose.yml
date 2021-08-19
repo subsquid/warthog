@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:12
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      PGUSER: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: warthog-test
+      POSTGRES_HOST_AUTH_METHOD: trust
+    command: ["postgres", "-c", "log_statement=all"]

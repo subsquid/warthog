@@ -33,8 +33,6 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged && tsc && yarn test"
     }
   },
   "repository": {
@@ -110,7 +108,7 @@
     "shortid": "^2.2.15",
     "type-graphql": "^0.17.5",
     "typedi": "^0.8.0",
-    "typeorm": "^0.2.32",
+    "typeorm": "0.2.37",
     "typeorm-typedi-extensions": "^0.4.1",
     "typescript": "^3.9.7"
   },

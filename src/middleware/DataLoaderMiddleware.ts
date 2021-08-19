@@ -3,6 +3,7 @@ import { MiddlewareInterface, NextFn, ResolverData } from 'type-graphql';
 import { Service } from 'typedi';
 
 import { BaseContext } from '../core';
+import { RelationIdLoader } from '../torm/RelationIdLoader';
 
 interface Deleteable {
   deletedAt?: string;
@@ -36,7 +37,7 @@ export class DataLoaderMiddleware implements MiddlewareInterface<BaseContext> {
               if (Array.isArray(entities) && entities[0] && Array.isArray(entities[0])) {
                 throw new Error('You must flatten arrays of arrays of entities');
               }
-              return context.connection.relationIdLoader
+              return new RelationIdLoader(context.connection)
                 .loadManyToManyRelationIdsAndGroup(relation, entities)
                 .then(groups => {
                   return groups.map(group => {
