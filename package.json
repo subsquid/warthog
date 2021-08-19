@@ -1,6 +1,6 @@
 {
   "name": "@joystream/warthog",
-  "version": "2.38.0",
+  "version": "2.39.0",
   "description": "Opinionated set of tools for setting up GraphQL backed by TypeORM",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
