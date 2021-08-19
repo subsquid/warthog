@@ -8,7 +8,6 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "keyofStringsOnly": true,
-    "lib": ["es2016", "dom", "es5", "scripthost", "esnext", "esnext.asynciterable"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -21,7 +20,7 @@
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": true,
-    "target": "es5",
+    "target": "ES2020",
     "typeRoots": ["node_modules/@types", "./typings", "./typings/typings.d.ts"],
     "types": ["isomorphic-fetch", "node", "jest"]
   },
