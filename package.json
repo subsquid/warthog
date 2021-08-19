@@ -18,7 +18,7 @@
     "url": "https://github.com/goldcaddy77"
   },
   "scripts": {
-    "build": "rm -rf ./dist && yarn tsc && copyfiles -u 1 src/cli/**/*.ejs dist/",
+    "build": "rm -rf ./dist && tsc && copyfiles -u 1 src/cli/**/*.ejs dist/",
     "bootstrap": "./tools/bootstrap-all.sh",
     "check:code": "tsc --noEmit && yarn lint && yarn prettify",
     "circle:build": "rm ./tmp/circle.build.yml 2> /dev/null && circleci config process .circleci/config.yml > ./tmp/circle.build.yml && circleci local execute -c ./tmp/circle.build.yml --job build",
@@ -26,6 +26,7 @@
     "lint": "eslint './+(examples|src|test|tools)/**/*.{js,ts}' --fix",
     "//prettier": "Note: ignores node_modules by default and 'generated' folder via .prettierignore",
     "prettify": "yarn prettier './+(examples|src|test|tools)/**/*.ts' --write",
+    "prepack": "yarn build",
     "semantic-release": "semantic-release",
     "test": "./tools/test.sh",
     "test:prod": "NODE_ENV=production ./tools/test.sh",
