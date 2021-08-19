@@ -20,7 +20,7 @@
     "sourceMap": true,
     "strict": true,
     "strictNullChecks": true,
-    "target": "ES2020",
+    "target": "ES5",
     "typeRoots": ["node_modules/@types", "./typings", "./typings/typings.d.ts"],
     "types": ["isomorphic-fetch", "node", "jest"]
   },

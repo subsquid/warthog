@@ -75,7 +75,7 @@ export function addQueryBuilderWhereItem<E>(
       // Assume: value = { foo: { bar { my_baz_gt: 1 } } }
       const flat = flattenObject(value); // { "foo.bar.my_baz_gt": 1 }
 
-      Object.entries(flat).forEach(([key, val]) => {
+      Object.entries(flat).forEach(([key, val], param_idx) => {
         // key = "foo.bar.my_baz_gt"
         // val = 1
         const path = key.split('.'); // ["foo", "bar", "my_baz_gt"]
@@ -102,11 +102,10 @@ export function addQueryBuilderWhereItem<E>(
         // go at least 3 levels deep
         // have snake_cased keys
         const pre = nonTerminalPathParts.map(pathPart => `->'${pathPart}'`).join(''); // ->'foo'->'bar'
-
         // Adds: "user"."json_field"->'foo'->'bar'->>'my_baz' > 1
         addQueryBuilderWhereItem(
           qb,
-          columnWithAlias + key, // Make sure parameterKey used here is unique so that it doesn't get value from previous "where"
+          `${parameterKey}__${param_idx}`, // Make sure parameterKey used here is unique so that it doesn't get value from previous "where"
           `${columnWithAlias}${pre}->>'${attr}'`,
           operator,
           val
