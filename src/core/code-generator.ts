@@ -11,9 +11,7 @@ import * as util from 'util';
 import { generateBindingFile } from '../gql';
 import { SchemaGenerator } from '../schema';
 import { authChecker, loadFromGlobArray } from '../tgql';
-import { logger } from '../core';
 // Load all model files so that decorators will gather metadata for code generation
-
 import * as Debug from 'debug';
 
 const debug = Debug('warthog:code-generators');
@@ -45,16 +43,11 @@ export class CodeGenerator {
 
   async generate() {
     debug('generate:start');
-    try {
-      await this.writeGeneratedIndexFile();
-      await this.writeGeneratedTSTypes();
-      await this.writeOrmConfig();
-      await this.writeSchemaFile();
-      await this.generateBinding();
-    } catch (error) {
-      logger.error(error);
-      debug(error); // this is required to log when run in a separate project
-    }
+    await this.writeGeneratedIndexFile();
+    await this.writeGeneratedTSTypes();
+    await this.writeOrmConfig();
+    await this.writeSchemaFile();
+    await this.generateBinding();
     debug('generate:end');
   }
 

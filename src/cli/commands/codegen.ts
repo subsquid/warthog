@@ -25,6 +25,7 @@ export default {
       if (error.name.indexOf('Cannot determine GraphQL input type') > -1) {
         logger.error('This often means you have multiple versions of TypeGraphQL installed.');
       }
+      process.exit(1);
     }
   }
 };
