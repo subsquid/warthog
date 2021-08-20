@@ -1,4 +1,5 @@
 import { WarthogGluegunToolbox } from '../types';
+import { CommandError } from '../util';
 
 export default {
   name: 'db:create',
@@ -9,7 +10,9 @@ export default {
     } = toolbox;
 
     const config = load();
-
-    await db.create(config.get('DB_DATABASE'));
+    const ok = await db.create(config.get('DB_DATABASE'));
+    if (!ok) {
+      throw new CommandError();
+    }
   }
 };

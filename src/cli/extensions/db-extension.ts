@@ -17,39 +17,30 @@ module.exports = (toolbox: GluegunToolbox) => {
   } = toolbox;
 
   toolbox.db = {
-    create: async function create(database: string) {
+    create: async function create(database: string): Promise<boolean> {
       if (!database) {
-        return error('Database name is required');
+        error('Database name is required');
+        return false;
       }
 
       const config = load();
-      const validationResult = validateDevNodeEnv(config['NODE_ENV'], 'create');
-      if (validationResult) {
-        return error(validationResult);
-      }
-
       const createDb = util.promisify(pgtools.createdb) as Function;
 
       try {
         await createDb(getPgConfig(config), database);
       } catch (e) {
         if (e.message.indexOf('duplicate') > -1) {
-          return error(`Error: Database '${database}' already exists`);
-        } else if (e.message) {
-          return error(e.message);
+          info(`Database '${database}' already exists`);
+          return true;
         }
-        return error(e);
+        error(e.message);
+        return false;
       }
       info(`Database '${database}' created!`);
+      return true;
     },
-    drop: async function drop() {
+    drop: async function drop(): Promise<boolean> {
       const config = load();
-
-      const validationResult = validateDevNodeEnv(config['NODE_ENV'], 'drop, action: string');
-      if (validationResult) {
-        return error(validationResult);
-      }
-
       const database = config.get('DB_DATABASE');
       const dropDb = util.promisify(pgtools.dropdb) as Function;
 
@@ -57,13 +48,14 @@ module.exports = (toolbox: GluegunToolbox) => {
         await dropDb(getPgConfig(config), database);
       } catch (e) {
         if (e.name.indexOf('invalid_catalog_name') > -1) {
-          return error(`Database '${database}' does not exist`);
-        } else if (e.message) {
-          return error(e.message);
+          info(`Database '${database}' does not exist`);
+          return true;
         }
-        return error(e);
+        error(e.message);
+        return false;
       }
       info(`Database '${database}' dropped!`);
+      return true;
     },
     migrate: async function migrate() {
       load();
