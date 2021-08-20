@@ -2,6 +2,7 @@ import { logger } from '../../core';
 import { CodeGenerator } from '../../core/code-generator';
 
 import { WarthogGluegunToolbox } from '../types';
+import { CommandError } from '../util';
 
 // BLOG: needed to switch from module.exports because it didn't compile correctly
 export default {
@@ -25,7 +26,7 @@ export default {
       if (error.name.indexOf('Cannot determine GraphQL input type') > -1) {
         logger.error('This often means you have multiple versions of TypeGraphQL installed.');
       }
-      process.exit(1);
+      throw new CommandError();
     }
   }
 };
