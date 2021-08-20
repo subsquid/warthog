@@ -2,6 +2,19 @@
   "name": "@subsquid/warthog",
   "version": "2.39.1",
   "description": "Opinionated set of tools for setting up GraphQL backed by TypeORM",
+  "keywords": [
+    "graphql",
+    "typeorm",
+    "typescript"
+  ],
+  "bugs": {
+    "url": "https://github.com/subsquid/warthog/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/subsquid/warthog.git"
+  },
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "bin": {
@@ -13,13 +26,6 @@
     "LICENSE",
     "README.md"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "author": {
-    "name": "Dan Caddigan",
-    "url": "https://github.com/goldcaddy77"
-  },
   "scripts": {
     "build": "rm -rf ./dist && tsc && copyfiles -u 1 src/cli/**/*.ejs dist/",
     "bootstrap": "./tools/bootstrap-all.sh",
@@ -36,25 +42,69 @@
     "test:watch": "./tools/test.sh --watch"
   },
   "husky": {
-    "hooks": {
-    }
+    "hooks": {}
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/subsquid/warthog.git"
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "*.{js,json}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.md": [
+      "markdownlint"
+    ]
   },
-  "keywords": [
-    "graphql",
-    "typeorm",
-    "typescript"
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/goldcaddy77/warthog/issues"
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true
   },
-  "homepage": "https://github.com/goldcaddy77/warthog#readme",
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "src/test/*",
+      "\\.test\\.ts$"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.test.json"
+      }
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "modulePathIgnorePatterns": [
+      "/examples/"
+    ],
+    "setupFiles": [
+      "./src/test/setupFiles.ts"
+    ],
+    "setupFilesAfterEnv": [
+      "./src/test/setupFilesAfterEnv.ts"
+    ],
+    "testRegex": "\\.test\\.ts$",
+    "transform": {
+      ".ts": "ts-jest"
+    },
+    "watchPathIgnorePatterns": [
+      "tmp/",
+      "/generated/*"
+    ]
+  },
+  "resolutions": {
+    "//": "Fixes security vulnerability",
+    "set-value": "2.0.1"
+  },
   "//": "TODO: figure out which of these are dependencies, devDeps or peerDeps",
   "dependencies": {
+    "@apollographql/graphql-playground-react": "https://github.com/Joystream/graphql-playground/releases/download/query-templates%401.7.27/graphql-playground-react-v1.7.27.tgz",
     "@types/app-root-path": "^1.2.4",
     "@types/bn.js": "^4.11.6",
     "@types/caller": "^1.0.0",
@@ -76,7 +126,6 @@
     "@types/prettier": "^1.18.3",
     "@types/shortid": "^0.0.29",
     "@types/ws": "^6.0.3",
-    "@apollographql/graphql-playground-react": "https://github.com/Joystream/graphql-playground/releases/download/query-templates%401.7.27/graphql-playground-react-v1.7.27.tgz",
     "apollo-link-error": "^1.1.12",
     "apollo-link-http": "^1.5.16",
     "apollo-server": "^2.9.9",
@@ -141,63 +190,8 @@
     "ts-node": "^8.10.2",
     "ts-node-dev": "^1.0.0-pre.60"
   },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
-    ],
-    "*.{js,json}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.md": [
-      "markdownlint"
-    ]
-  },
-  "prettier": {
-    "printWidth": 100,
-    "singleQuote": true
-  },
-  "jest": {
-    "setupFiles": [
-      "./src/test/setupFiles.ts"
-    ],
-    "setupFilesAfterEnv": [
-      "./src/test/setupFilesAfterEnv.ts"
-    ],
-    "transform": {
-      ".ts": "ts-jest"
-    },
-    "testRegex": "\\.test\\.ts$",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
-    "modulePathIgnorePatterns": [
-      "/examples/"
-    ],
-    "watchPathIgnorePatterns": [
-      "tmp/",
-      "/generated/*"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.ts"
-    ],
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "src/test/*",
-      "\\.test\\.ts$"
-    ],
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "tsconfig.test.json"
-      }
-    }
-  },
-  "resolutions": {
-    "//": "Fixes security vulnerability",
-    "set-value": "2.0.1"
+  "publishConfig": {
+    "access": "public"
   },
   "release": {
     "branches": [
